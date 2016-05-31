@@ -137,8 +137,7 @@ boost::shared_ptr< aerodynamics::FlightConditions > createFlightConditions(
         const std::string& nameOfBodyExertingAcceleration,
         const boost::function< double( ) > angleOfAttackFunction,
         const boost::function< double( ) > angleOfSideslipFunction,
-        const boost::function< double( ) > bankAngleFunction,
-        const boost::function< void( const double ) > angleUpdateFunction )
+        const boost::function< double( ) > bankAngleFunction )
 {
     // Check whether all required environment models are set.
     if( centralBody->getAtmosphereModel( ) == NULL )
@@ -203,8 +202,8 @@ boost::shared_ptr< aerodynamics::FlightConditions > createFlightConditions(
     boost::shared_ptr< reference_frames::AerodynamicAngleCalculator > aerodynamicAngleCalculator =
             boost::make_shared< reference_frames::AerodynamicAngleCalculator >(
                 boost::bind( &aerodynamics::FlightConditions::getCurrentBodyCenteredBodyFixedState,
-                             flightConditions ), 1,
-                angleOfAttackFunction, angleOfSideslipFunction, bankAngleFunction, angleUpdateFunction );
+                             flightConditions ),
+                angleOfAttackFunction, angleOfSideslipFunction, bankAngleFunction, 1 );
     flightConditions->setAerodynamicAngleCalculator( aerodynamicAngleCalculator );
 
     return flightConditions;

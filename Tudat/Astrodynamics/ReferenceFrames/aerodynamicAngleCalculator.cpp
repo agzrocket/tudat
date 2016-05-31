@@ -16,7 +16,7 @@ namespace reference_frames
 {
 
 //! Function to update the orientation angles to the current state.
-void AerodynamicAngleCalculator::update( const double currentTime )
+void AerodynamicAngleCalculator::update( )
 {
     // Clear all current rotation matrices.
     currentRotationMatrices_.clear( );
@@ -43,11 +43,6 @@ void AerodynamicAngleCalculator::update( const double currentTime )
         currentAerodynamicAngles_[ heading_angle ] = calculateHeadingAngle( verticalFrameVelocity );
         currentAerodynamicAngles_[ flight_path_angle ] =
                 calculateFlightPathAngle( verticalFrameVelocity );
-
-        if( !angleUpdateFunction_.empty( ) )
-        {
-            angleUpdateFunction_( currentTime );
-        }
 
         currentAerodynamicAngles_[ angle_of_attack ] = angleOfAttackFunction_( );
         currentAerodynamicAngles_[ angle_of_sideslip ] = angleOfSideslipFunction_( );

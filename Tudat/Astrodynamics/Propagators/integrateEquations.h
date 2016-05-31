@@ -84,7 +84,6 @@ std::map< TimeType, StateType > integrateEquations(
 
     int printIndex = 0;
     int printFrequency = integratorSettings->printFrequency_;
-
     // Perform numerical integration steps until end time reached.
     while( timeStepSign * static_cast< TimeType >( currentTime ) < timeStepSign * static_cast< TimeType >( endTime ) )
     {

@@ -120,12 +120,12 @@ BOOST_AUTO_TEST_CASE( testCowellPopagatorCentralBodies )
     accelerationMap[ "Mars" ] = accelerationsOfMars;
 
     // Define list of bodies to propagate
-    std::vector< std::string > bodiesToPropagate;
-    bodiesToPropagate.push_back( "Earth" );
-    bodiesToPropagate.push_back( "Sun" );
-    bodiesToPropagate.push_back( "Moon" );
-    bodiesToPropagate.push_back( "Mars" );
-    unsigned int numberOfNumericalBodies = bodiesToPropagate.size( );
+    std::vector< std::string > bodiesToIntegrate;
+    bodiesToIntegrate.push_back( "Earth" );
+    bodiesToIntegrate.push_back( "Sun" );
+    bodiesToIntegrate.push_back( "Moon" );
+    bodiesToIntegrate.push_back( "Mars" );
+    unsigned int numberOfNumericalBodies = bodiesToIntegrate.size( );
 
     // Define numerical integrator settings.
     boost::shared_ptr< IntegratorSettings< > > integratorSettings =
@@ -134,22 +134,24 @@ BOOST_AUTO_TEST_CASE( testCowellPopagatorCentralBodies )
 
     // Define central bodies to use in propagation (all w.r.t SSB).
     std::vector< std::string > centralBodies;
+    std::map< std::string, std::string > centralBodyMap;
     centralBodies.resize( numberOfNumericalBodies );
     for( unsigned int i = 0; i < numberOfNumericalBodies; i++ )
     {
         centralBodies[ i ] = "SSB";
+        centralBodyMap[ bodiesToIntegrate[ i ] ] = centralBodies[ i ];
     }
 
     // Get initial state vector as input to integration.
     Eigen::VectorXd systemInitialState = getInitialStatesOfBodies(
-                bodiesToPropagate, centralBodies, bodyMap, initialEphemerisTime );
+                bodiesToIntegrate, centralBodies, bodyMap, initialEphemerisTime );
 
     // Create acceleration models and propagation settings.
     AccelerationMap accelerationModelMap = createAccelerationModelsMap(
-                bodyMap, accelerationMap, bodiesToPropagate, centralBodies );
+                bodyMap, accelerationMap, centralBodyMap );
     boost::shared_ptr< TranslationalStatePropagatorSettings< double > > propagatorSettings =
             boost::make_shared< TranslationalStatePropagatorSettings< double > >
-            ( centralBodies, accelerationModelMap, bodiesToPropagate, systemInitialState );
+            ( centralBodies, accelerationModelMap, bodiesToIntegrate, systemInitialState );
 
     // Create simulation object and propagate dynamics.
     SingleArcDynamicsSimulator< > dynamicsSimulator(
@@ -160,16 +162,20 @@ BOOST_AUTO_TEST_CASE( testCowellPopagatorCentralBodies )
     centralBodies[ 1 ] = "SSB";
     centralBodies[ 2 ] = "Earth";
     centralBodies[ 3 ] = "Sun";
+    for( unsigned int i = 0; i < numberOfNumericalBodies; i++ )
+    {
+        centralBodyMap[ bodiesToIntegrate[ i ] ] = centralBodies[ i ];
+    }
 
     systemInitialState = getInitialStatesOfBodies(
-                bodiesToPropagate, centralBodies, bodyMap, initialEphemerisTime );
+                bodiesToIntegrate, centralBodies, bodyMap, initialEphemerisTime );
 
     // Create new acceleration models and propagation settings.
     AccelerationMap accelerationModelMap2 = createAccelerationModelsMap(
-                bodyMap, accelerationMap, bodiesToPropagate, centralBodies );
+                bodyMap, accelerationMap, centralBodyMap );
     boost::shared_ptr< TranslationalStatePropagatorSettings< double > > propagatorSettings2 =
             boost::make_shared< TranslationalStatePropagatorSettings< double > >
-            ( centralBodies, accelerationModelMap2, bodiesToPropagate, systemInitialState );
+            ( centralBodies, accelerationModelMap2, bodiesToIntegrate, systemInitialState );
 
     // Create new simulation object and propagate dynamics.
     SingleArcDynamicsSimulator< > dynamicsSimulator2(
@@ -223,9 +229,9 @@ BOOST_AUTO_TEST_CASE( testCowellPopagatorCentralBodies )
                 BOOST_CHECK_SMALL( std::fabs( stateDifference( 1 + 6 * j ) ), 1.0E-2 );
                 BOOST_CHECK_SMALL( std::fabs( stateDifference( 2 + 6 * j ) ), 1.0E-2 );
 
-                BOOST_CHECK_SMALL( std::fabs( stateDifference( 3 + 6 * j ) ), 5.0E-9 );
-                BOOST_CHECK_SMALL( std::fabs( stateDifference( 4 + 6 * j ) ), 5.0E-9 );
-                BOOST_CHECK_SMALL( std::fabs( stateDifference( 5 + 6 * j ) ), 5.0E-9 );
+                BOOST_CHECK_SMALL( std::fabs( stateDifference( 3 + 6 * j ) ), 2.0E-9 );
+                BOOST_CHECK_SMALL( std::fabs( stateDifference( 4 + 6 * j ) ), 2.0E-9 );
+                BOOST_CHECK_SMALL( std::fabs( stateDifference( 5 + 6 * j ) ), 2.0E-9 );
             }
             else
             {
@@ -271,9 +277,9 @@ BOOST_AUTO_TEST_CASE( testCowellPopagatorCentralBodies )
                 BOOST_CHECK_SMALL( std::fabs( stateDifference( 1 + 6 * j ) ), 1.0E-2 );
                 BOOST_CHECK_SMALL( std::fabs( stateDifference( 2 + 6 * j ) ), 1.0E-2 );
 
-                BOOST_CHECK_SMALL( std::fabs( stateDifference( 3 + 6 * j ) ), 5.0E-9 );
-                BOOST_CHECK_SMALL( std::fabs( stateDifference( 4 + 6 * j ) ), 5.0E-9 );
-                BOOST_CHECK_SMALL( std::fabs( stateDifference( 5 + 6 * j ) ), 5.0E-9 );
+                BOOST_CHECK_SMALL( std::fabs( stateDifference( 3 + 6 * j ) ), 2.0E-9 );
+                BOOST_CHECK_SMALL( std::fabs( stateDifference( 4 + 6 * j ) ), 2.0E-9 );
+                BOOST_CHECK_SMALL( std::fabs( stateDifference( 5 + 6 * j ) ), 2.0E-9 );
             }
             else
             {
@@ -334,9 +340,9 @@ BOOST_AUTO_TEST_CASE( testCowellPopagatorKeplerCompare )
     accelerationMap[ "Moon" ] = accelerationsOfMoon;
 
     // Propagate the moon only
-    std::vector< std::string > bodiesToPropagate;
-    bodiesToPropagate.push_back( "Moon" );
-    unsigned int numberOfNumericalBodies = bodiesToPropagate.size( );
+    std::vector< std::string > bodiesToIntegrate;
+    bodiesToIntegrate.push_back( "Moon" );
+    unsigned int numberOfNumericalBodies = bodiesToIntegrate.size( );
 
     // Define settings for numerical integrator.
     boost::shared_ptr< IntegratorSettings< > > integratorSettings =
@@ -362,6 +368,7 @@ BOOST_AUTO_TEST_CASE( testCowellPopagatorKeplerCompare )
 
         // Define central bodies for integration.
         std::vector< std::string > centralBodies;
+        std::map< std::string, std::string > centralBodyMap;
 
         if( testCase == 0 )
         {
@@ -377,22 +384,24 @@ BOOST_AUTO_TEST_CASE( testCowellPopagatorKeplerCompare )
                     bodyMap.at( "Earth" )->getGravityFieldModel( )->getGravitationalParameter( );
             centralBodies.push_back( "SSB" );
         }
+        centralBodyMap[ bodiesToIntegrate[ 0 ] ] = centralBodies[ 0 ];
+
 
         // Create system initial state.
-        Eigen::VectorXd systemInitialState = Eigen::VectorXd( bodiesToPropagate.size( ) * 6 );
+        Eigen::VectorXd systemInitialState = Eigen::VectorXd( bodiesToIntegrate.size( ) * 6 );
         for( unsigned int i = 0; i < numberOfNumericalBodies ; i++ )
         {
             systemInitialState.segment( i * 6 , 6 ) =
                     spice_interface::getBodyCartesianStateAtEpoch(
-                        bodiesToPropagate[ i ], "Earth", "ECLIPJ2000", "NONE", initialEphemerisTime );
+                        bodiesToIntegrate[ i ], "Earth", "ECLIPJ2000", "NONE", initialEphemerisTime );
         }
 
         // Create acceleration models and propagation settings.
         AccelerationMap accelerationModelMap = createAccelerationModelsMap(
-                    bodyMap, accelerationMap, bodiesToPropagate, centralBodies );
+                    bodyMap, accelerationMap, centralBodyMap );
         boost::shared_ptr< TranslationalStatePropagatorSettings< double > > propagatorSettings =
                 boost::make_shared< TranslationalStatePropagatorSettings< double > >
-                ( centralBodies, accelerationModelMap, bodiesToPropagate, systemInitialState );
+                ( centralBodies, accelerationModelMap, bodiesToIntegrate, systemInitialState );
 
         // Create dynamics simulation object.
         SingleArcDynamicsSimulator< > dynamicsSimulator(

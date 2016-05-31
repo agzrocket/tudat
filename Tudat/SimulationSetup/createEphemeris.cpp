@@ -118,7 +118,7 @@ boost::shared_ptr< ephemerides::Ephemeris > createBodyEphemeris(
             // ephemerides, append 'Barycenter' to body name.
             std::string inputName;
             inputName = bodyName;
-            if( bodyName == "Mars" ||
+            if( bodyName == "Mercury" || bodyName == "Venus" || bodyName == "Mars" ||
                     bodyName == "Jupiter"  || bodyName == "Saturn" ||
                     bodyName == "Uranus" || bodyName == "Neptune" )
             {
