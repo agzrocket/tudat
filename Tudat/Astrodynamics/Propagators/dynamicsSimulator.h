@@ -434,7 +434,7 @@ public:
         equationsOfMotionNumericalSolution_ =
                 integrateEquations< Eigen::Matrix< StateScalarType, Eigen::Dynamic, 1 >, TimeType >(
                     stateDerivativeFunction_, dynamicsStateDerivative_->convertFromOutputSolution(
-                        initialStates, integratorSettings_->initialTime_ ), integratorSettings_ , bodyMap_ , vehicleName_ );
+                        initialStates, integratorSettings_->initialTime_ ), integratorSettings_ , bodyMap_ , vehicleName_ , dependentVariableHistory_ );
         equationsOfMotionNumericalSolution_ = dynamicsStateDerivative_->
                 convertNumericalStateSolutionsToOutputSolutions( equationsOfMotionNumericalSolution_ );
 
@@ -467,6 +467,12 @@ public:
     {
         equationsOfMotionNumericalSolution_ = equationsOfMotionNumericalSolution;
         processNumericalEquationsOfMotionSolution( );
+    }
+
+    //! Function to retrieve the map with additional dependent variables useful for reentry trajectory studies.
+    std::map< TimeType, Eigen::MatrixXd > getDependentVariableHistory( )
+    {
+        return dependentVariableHistory_;
     }
 
 protected:
@@ -510,7 +516,11 @@ protected:
     std::map< TimeType, Eigen::Matrix< StateScalarType, Eigen::Dynamic, 1 > >
         equationsOfMotionNumericalSolution_;
 
+    //! Name of the vehicle to be propagated.
     std::string vehicleName_;
+
+    //! Map containing additional dependent variables useful for reentry trajectory studies.
+    std::map< TimeType, Eigen::MatrixXd > dependentVariableHistory_;
 };
 
 } // namespace propagators

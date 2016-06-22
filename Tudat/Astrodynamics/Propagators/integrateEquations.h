@@ -50,6 +50,7 @@ std::map< TimeType, StateType > integrateEquations(
         boost::shared_ptr< numerical_integrators::IntegratorSettings< TimeType > > integratorSettings,
         simulation_setup::NamedBodyMap& bodyMap,
         std::string& vehicleName,
+        std::map< TimeType, Eigen::MatrixXd >& dependentVariableHistory,
         const TimeType printInterval = TUDAT_NAN )
 {
     using namespace tudat::numerical_integrators;
@@ -95,8 +96,9 @@ std::map< TimeType, StateType > integrateEquations(
     int printFrequency = integratorSettings->printFrequency_;
 
     // Perform numerical integration steps until end time reached.
-    while( timeStepSign * static_cast< TimeType >( currentTime )
-           < timeStepSign * static_cast< TimeType >( endTime ) )
+    while( (timeStepSign * static_cast< TimeType >( currentTime )
+            < timeStepSign * static_cast< TimeType >( endTime ))
+           && (vehicleFlightConditions->getCurrentAltitude() > 10000) )
     {
         previousTime = currentTime;
 
