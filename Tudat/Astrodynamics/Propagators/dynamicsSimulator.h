@@ -382,6 +382,7 @@ public:
      *  \param setIntegratedResult Boolean to determine whether to automatically use the integrated
      *  results to set ephemerides.
      */
+    // This constructor now receives the vehicleName as an argument!
     SingleArcDynamicsSimulator(
             const  simulation_setup::NamedBodyMap& bodyMap,
             const boost::shared_ptr< numerical_integrators::IntegratorSettings< TimeType > >
@@ -389,11 +390,15 @@ public:
             const boost::shared_ptr< PropagatorSettings< StateScalarType > > propagatorSettings,
             const bool areEquationsOfMotionToBeIntegrated = true,
             const bool clearNumericalSolutions = true,
-            const bool setIntegratedResult = true ):
+            const bool setIntegratedResult = true ,
+            std::string vehicleName = "NoName"):
         DynamicsSimulator< StateScalarType, TimeType >(
             bodyMap, integratorSettings, propagatorSettings, clearNumericalSolutions,
             setIntegratedResult )
     {
+        // Store name of the vehicle to be propagated as a private variable.
+        vehicleName_ = vehicleName;
+
         // Integrate equations of motion if required.
         if( areEquationsOfMotionToBeIntegrated )
         {
@@ -425,10 +430,11 @@ public:
         dynamicsStateDerivative_->setPropagationSettings( std::vector< IntegratedStateType >( ), 1 );
 
         // Integrate equations of motion numerically.
+        //! This function now receives the bodyMap and the vehicleName!
         equationsOfMotionNumericalSolution_ =
                 integrateEquations< Eigen::Matrix< StateScalarType, Eigen::Dynamic, 1 >, TimeType >(
                     stateDerivativeFunction_, dynamicsStateDerivative_->convertFromOutputSolution(
-                        initialStates, integratorSettings_->initialTime_ ), integratorSettings_ );
+                        initialStates, integratorSettings_->initialTime_ ), integratorSettings_ , bodyMap_ , vehicleName_ );
         equationsOfMotionNumericalSolution_ = dynamicsStateDerivative_->
                 convertNumericalStateSolutionsToOutputSolutions( equationsOfMotionNumericalSolution_ );
 
@@ -503,6 +509,8 @@ protected:
      */
     std::map< TimeType, Eigen::Matrix< StateScalarType, Eigen::Dynamic, 1 > >
         equationsOfMotionNumericalSolution_;
+
+    std::string vehicleName_;
 };
 
 } // namespace propagators

@@ -24,6 +24,8 @@
 #include "Tudat/Mathematics/NumericalIntegrators/createNumericalIntegrator.h"
 #include "Tudat/Mathematics/Interpolators/lagrangeInterpolator.h"
 
+#include "Tudat/SimulationSetup/body.h"
+
 namespace tudat
 {
 
@@ -46,10 +48,15 @@ std::map< TimeType, StateType > integrateEquations(
         boost::function< StateType( const TimeType, const StateType&) > stateDerivativeFunction,
         const StateType initialState,
         boost::shared_ptr< numerical_integrators::IntegratorSettings< TimeType > > integratorSettings,
+        simulation_setup::NamedBodyMap& bodyMap,
+        std::string& vehicleName,
         const TimeType printInterval = TUDAT_NAN )
 {
     using namespace tudat::numerical_integrators;
 
+    // Retrieve flight conditions pointer.
+    boost::shared_ptr< aerodynamics::FlightConditions > vehicleFlightConditions =
+            bodyMap[ vehicleName ]->getFlightConditions();
 
     // Create numerical integrator.
     boost::shared_ptr< NumericalIntegrator< TimeType, StateType, StateType > > integrator
