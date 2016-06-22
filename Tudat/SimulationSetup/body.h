@@ -665,6 +665,30 @@ public:
         }
     }
 
+    //! Function to set the vehicle nose radius.
+    void setNoseRadius( double noseRadius )
+    {
+        noseRadius_ = noseRadius;
+    }
+
+    //! Function to get the vehicle nose radius.
+    double getNoseRadius( )
+    {
+        return noseRadius_;
+    }
+
+    //! Function to set the current vehicle body flap deflection.
+    void setCurrentElevatorDeflection( double bodyFlapDeflection )
+    {
+        currentBodyFlapDeflection_ = bodyFlapDeflection;
+    }
+
+    //! Function to get the current vehicle body flap deflection.
+    double getCurrentElevatorDeflection( )
+    {
+        return currentBodyFlapDeflection_;
+    }
+
 protected:
 
 private:
@@ -742,6 +766,12 @@ private:
     std::map< std::string,
               boost::shared_ptr< electro_magnetism::RadiationPressureInterface > >::iterator
     radiationPressureIterator_;
+
+    //! Vehicle nose radius.
+    double noseRadius_;
+
+    //! Current vehicle body flap deflection.
+    double currentBodyFlapDeflection_;
 };
 
 typedef std::map< std::string, boost::shared_ptr< Body > > NamedBodyMap;
