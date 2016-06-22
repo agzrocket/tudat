@@ -26,6 +26,8 @@
 
 #include "Tudat/SimulationSetup/body.h"
 
+#include "thesisApplications/app16/app16/ThesisTools/PropagatorExtensions/fillOutputHistoryMaps.h"
+
 namespace tudat
 {
 
@@ -56,8 +58,8 @@ std::map< TimeType, StateType > integrateEquations(
     using namespace tudat::numerical_integrators;
 
     // Retrieve flight conditions pointer.
-    boost::shared_ptr< aerodynamics::FlightConditions > vehicleFlightConditions =
-            bodyMap[ vehicleName ]->getFlightConditions();
+    boost::shared_ptr< aerodynamics::FlightConditions > vehicleFlightConditions
+          = bodyMap[ vehicleName ]->getFlightConditions();
 
     // Create numerical integrator.
     boost::shared_ptr< NumericalIntegrator< TimeType, StateType, StateType > > integrator
@@ -71,6 +73,13 @@ std::map< TimeType, StateType > integrateEquations(
     // Initialization of numerical solutions for variational equations.
     std::map< TimeType, StateType > solutionHistory;
     solutionHistory[ currentTime ] = newState;
+
+    // Initialization of dependent variable functions.
+    thesis_tools::propagator_extensions::OutputHistoryMaps outputHistoryFunctions( bodyMap , vehicleName );
+
+    // Fill dependent variable output map.
+    stateDerivativeFunction( currentTime , newState );
+    outputHistoryFunctions.fillDependentVariables( currentTime , dependentVariableHistory );
 
     // Check if numerical integration is forward or backwrd.
     TimeType timeStepSign = 1.0L;
@@ -90,7 +99,10 @@ std::map< TimeType, StateType > integrateEquations(
     currentTime = integrator->getCurrentIndependentVariable( );
 
     timeStep = timeStepSign * integrator->getNextStepSize( );
+
+    stateDerivativeFunction( currentTime , newState );
     solutionHistory[ currentTime ] = newState;
+    outputHistoryFunctions.fillDependentVariables( currentTime , dependentVariableHistory );
 
     int printIndex = 0;
     int printFrequency = integratorSettings->printFrequency_;
@@ -107,12 +119,15 @@ std::map< TimeType, StateType > integrateEquations(
         currentTime = integrator->getCurrentIndependentVariable( );
         timeStep = timeStepSign * integrator->getNextStepSize( );
 
+        stateDerivativeFunction( currentTime , newState );
+
         // Save integration result in map
         printIndex++;
         printIndex = printIndex % printFrequency;
         if( printIndex == 0 )
         {
             solutionHistory[ currentTime ] = newState;
+            outputHistoryFunctions.fillDependentVariables( currentTime , dependentVariableHistory );
         }
 
         // Print solutions
