@@ -196,6 +196,15 @@ public:
             nextRootValue           = currentRootValue - currentFunctionValue
                     * ( currentRootValue - lastRootValue )
                     / ( currentFunctionValue - lastFunctionValue );
+
+            // Check that the nextRootValue is a NaN. If true, secant method stops
+            // and return a NaN.
+            if(nextRootValue!=nextRootValue)
+            {
+                std::cout << "Secant method diverges!" << std::endl;
+                break;
+            }
+
             nextFunctionValue       = this->rootFunction->evaluate( nextRootValue );
 
             // Update the counter.

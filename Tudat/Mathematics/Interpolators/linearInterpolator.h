@@ -194,6 +194,8 @@ public:
                 ( dependentValues_[ newNearestLowerIndex + 1 ] -
                   dependentValues_[ newNearestLowerIndex ] );
 
+//        std::cout << independentValues_[ newNearestLowerIndex ] << " " << independentValues_[ newNearestLowerIndex + 1 ] << std::endl;
+
         return interpolatedValue;
     }
 };

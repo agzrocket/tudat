@@ -108,6 +108,7 @@ public:
      *  coefficients are typically defined in negative direction (default true).
      */
     CustomAerodynamicCoefficientInterface(
+            const double noseRadius,
             const boost::function< Eigen::Vector3d( const std::vector< double >& ) >
             forceCoefficientFunction,
             const boost::function< Eigen::Vector3d( const std::vector< double >& ) >
@@ -120,7 +121,7 @@ public:
             independentVariableNames,
             const bool areCoefficientsInAerodynamicFrame = true,
             const bool areCoefficientsInNegativeAxisDirection = true ):
-        AerodynamicCoefficientInterface( referenceLength, referenceArea, lateralReferenceLength,
+        AerodynamicCoefficientInterface( noseRadius, referenceLength, referenceArea, lateralReferenceLength,
                                          momentReferencePoint, independentVariableNames,
                                          areCoefficientsInAerodynamicFrame,
                                          areCoefficientsInNegativeAxisDirection )
@@ -154,6 +155,7 @@ public:
      *  coefficients are typically defined in negative direction (default true).
      */
     CustomAerodynamicCoefficientInterface(
+            const double noseRadius,
             const boost::function< basic_mathematics::Vector6d( const std::vector< double >& ) >
             coefficientFunction,
             const double referenceLength,
@@ -164,7 +166,7 @@ public:
             independentVariableNames,
             const bool areCoefficientsInAerodynamicFrame = true,
             const bool areCoefficientsInNegativeAxisDirection = true ):
-        AerodynamicCoefficientInterface( referenceLength, referenceArea, lateralReferenceLength,
+        AerodynamicCoefficientInterface( noseRadius, referenceLength, referenceArea, lateralReferenceLength,
                                          momentReferencePoint, independentVariableNames,
                                          areCoefficientsInAerodynamicFrame,
                                          areCoefficientsInNegativeAxisDirection ),

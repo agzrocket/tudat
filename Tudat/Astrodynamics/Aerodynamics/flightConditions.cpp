@@ -5,6 +5,9 @@
 #include "Tudat/Astrodynamics/Aerodynamics/flightConditions.h"
 #include "Tudat/Astrodynamics/Aerodynamics/standardAtmosphere.h"
 #include "Tudat/Mathematics/BasicMathematics/mathematicalConstants.h"
+#include <Tudat/SimulationSetup/body.h>
+#include <Tudat/Astrodynamics/Gravitation/gravityFieldModel.h>
+
 
 namespace tudat
 {
@@ -31,7 +34,8 @@ FlightConditions::FlightConditions(
     transformationToCentralBodyFrame_( transformationToCentralBodyFrame ),
     aerodynamicCoefficientInterface_( aerodynamicCoefficientInterface ),
     aerodynamicAngleCalculator_( aerodynamicAngleCalculator ),currentAltitude_( TUDAT_NAN ),
-    currentLatitude_( TUDAT_NAN ), currentLongitude_( TUDAT_NAN ), currentTime_( TUDAT_NAN )
+    currentLatitude_( TUDAT_NAN ), currentLongitude_( TUDAT_NAN ), currentTime_( TUDAT_NAN ),
+    windModelPointer_( NULL )
 {
     updateLatitudeAndLongitude_ = 0;
 

@@ -99,6 +99,7 @@ public:
      *  coefficients are typically defined in negative direction (default true).
      */
     AerodynamicCoefficientInterface(
+            const double noseRadius,
             const double referenceLength,
             const double referenceArea,
             const double lateralReferenceLength,
@@ -107,6 +108,7 @@ public:
             independentVariableNames,
             const bool areCoefficientsInAerodynamicFrame = true,
             const bool areCoefficientsInNegativeAxisDirection = true ):
+        noseRadius_( noseRadius ),
         referenceLength_( referenceLength ),
         referenceArea_( referenceArea ),
         lateralReferenceLength_( lateralReferenceLength ),
@@ -121,12 +123,31 @@ public:
     //! Default destructor.
     virtual ~AerodynamicCoefficientInterface( ) { }
 
+    //! Set current elevator deflection.
+    /*!
+     * Feed elevator deflection to the aerodynamic interface.
+     */
+    void setCurrentElevatorDeflection( double elevatorDeflection ){ currentElevatorDeflection_ = elevatorDeflection; }
+
+    //! Get current elevator deflection.
+    /*!
+     * Retrieve elevator deflection from the aerodynamic interface.
+     */
+    double getCurrentElevatorDeflection( ){ return currentElevatorDeflection_; }
+
     //! Get reference area.
     /*!
      * Returns reference area used to non-dimensionalize aerodynamic forces and moments.
      * \return Aerodynamic reference area.
      */
     double getReferenceArea( ) { return referenceArea_; }
+
+    //! Get nose radius.
+    /*!
+     * Returns nose radius used to compute heat flux and heat load.
+     * \return Vehicle nose radius.
+     */
+    double getNoseRadius( ) { return noseRadius_; }
 
     //! Get reference length.
     /*!
@@ -327,6 +348,14 @@ protected:
       *  coefficients are typically defined in negative direction.
      */
     bool areCoefficientsInNegativeAxisDirection_;
+
+    //! Vehicle nose radius.
+    /*!
+     * Vehicle nose radius.
+     */
+    double noseRadius_;
+
+    double currentElevatorDeflection_;
 
 private:
 };

@@ -684,7 +684,6 @@ private:
     //! Function returning body mass as a function of time.
     boost::function< double( const double ) > bodyMassFunction_;
 
-
     //! Ephemeris of body.
     boost::shared_ptr< ephemerides::Ephemeris > bodyEphemeris_;
 
@@ -714,6 +713,7 @@ private:
     //! Predefined iterator for efficiency purposes.
     std::map< std::string, boost::shared_ptr< electro_magnetism::RadiationPressureInterface > >::iterator
     radiationPressureIterator_;
+
 };
 
 typedef std::map< std::string, boost::shared_ptr< Body > > NamedBodyMap;

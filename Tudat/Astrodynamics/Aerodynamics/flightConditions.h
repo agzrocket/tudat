@@ -4,11 +4,15 @@
 #include <vector>
 
 #include <boost/function.hpp>
+#include <boost/shared_ptr.hpp>
 
+#include <Tudat/SimulationSetup/body.h>
 #include "Tudat/Astrodynamics/Aerodynamics/aerodynamicCoefficientInterface.h"
 #include "Tudat/Astrodynamics/Aerodynamics/atmosphereModel.h"
 #include "Tudat/Astrodynamics/ReferenceFrames/aerodynamicAngleCalculator.h"
+#include <Tudat/Astrodynamics/Gravitation/gravityFieldModel.h>
 #include "Tudat/Mathematics/BasicMathematics/linearAlgebraTypes.h"
+#include <thesisApplications/app13/app13/ThesisTools/WindModels/horizonalWindModel07.h>
 
 namespace tudat
 {
@@ -155,6 +159,11 @@ public:
         return aerodynamicAngleCalculator_;
     }
 
+    void setWindModelPointer( boost::shared_ptr< thesis_tools::wind_models::HorizontalWindModel07 > windModelPointer )
+    {
+        windModelPointer_ = windModelPointer;
+    }
+
 
 private:
 
@@ -208,8 +217,13 @@ private:
     //! Current time of propagation.
     double currentTime_;
 
+//    //! Current specific energy.
+//    double currentSpecificEnergy_;
+
     //! Boolean setting whether latitude and longitude are to be updated by updateConditions().
     bool updateLatitudeAndLongitude_;
+
+    boost::shared_ptr< thesis_tools::wind_models::HorizontalWindModel07 > windModelPointer_;
 };
 
 }

@@ -110,7 +110,7 @@ public:
             const bool areCoefficientsInAerodynamicFrame = true,
             const bool areCoefficientsInNegativeAxisDirection = true  ):
         AerodynamicCoefficientInterface(
-            referenceLength, referenceArea, lateralReferenceLength, momentReferencePoint,
+            NAN , referenceLength, referenceArea, lateralReferenceLength, momentReferencePoint,
             independentVariableNames, areCoefficientsInAerodynamicFrame,
             areCoefficientsInNegativeAxisDirection ),
         dataPointsOfIndependentVariables_( dataPointsOfIndependentVariables )

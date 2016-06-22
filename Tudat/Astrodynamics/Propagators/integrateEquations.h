@@ -23,6 +23,8 @@
 #include "Tudat/Mathematics/NumericalIntegrators/createNumericalIntegrator.h"
 #include "Tudat/Mathematics/Interpolators/lagrangeInterpolator.h"
 
+#include <thesisApplications/app13/app13/ThesisTools/PropagatorExtensions/fillOutputHistoryMaps.h>
+
 namespace tudat
 {
 
@@ -45,10 +47,19 @@ std::map< TimeType, StateType > integrateEquations(
         boost::function< StateType( const TimeType, const StateType&) > stateDerivativeFunction,
         const StateType initialState,
         boost::shared_ptr< numerical_integrators::IntegratorSettings< TimeType > > integratorSettings,
+        simulation_setup::NamedBodyMap bodyMap,
+        std::map< TimeType, Eigen::MatrixXd >& dependentVariableHistoryMap,
+        const std::string vehicleName,
         const TimeType printInterval = TUDAT_NAN )
 {
     using namespace tudat::numerical_integrators;
 
+    // Output vehicleName for confirmation.
+    std::cout << "Vehicle Name: " << vehicleName << std::endl;
+
+    // Retrieve FlightConditions pointer.
+    const boost::shared_ptr< aerodynamics::FlightConditions > flightConditionsPointer
+            = bodyMap[ vehicleName ]->getFlightConditions( ) ;
 
     // Create numerical integrator.
     boost::shared_ptr< NumericalIntegrator< TimeType, StateType, StateType > > integrator =
@@ -56,11 +67,20 @@ std::map< TimeType, StateType > integrateEquations(
 
     // Get Initial state and time.
     TimeType currentTime = integratorSettings->initialTime_;
-    StateType newState = initialState;
+    StateType newState   = initialState;
 
     // Initialization of numerical solutions for variational equations.
     std::map< TimeType, StateType > solutionHistory;
     solutionHistory[ currentTime ] = newState;
+
+    // Initialization of dependent variable and guidance command outputs.
+    thesis_tools::propagator_extensions::OutputHistoryMaps outputHistoryFunctions( bodyMap , vehicleName );
+
+    // Fill output maps.
+    stateDerivativeFunction( currentTime , newState );
+
+    outputHistoryFunctions.fillDependentVariables(
+                currentTime , dependentVariableHistoryMap );
 
     // Check if numerical integration is forward or backwrd.
     TimeType timeStepSign = 1.0L;
@@ -80,12 +100,19 @@ std::map< TimeType, StateType > integrateEquations(
     currentTime = integrator->getCurrentIndependentVariable( );
 
     timeStep = timeStepSign * integrator->getNextStepSize( );
+
+    stateDerivativeFunction( currentTime , newState );
     solutionHistory[ currentTime ] = newState;
+
+    outputHistoryFunctions.fillDependentVariables(
+                currentTime , dependentVariableHistoryMap );
 
     int printIndex = 0;
     int printFrequency = integratorSettings->printFrequency_;
-    // Perform numerical integration steps until end time reached.
-    while( timeStepSign * static_cast< TimeType >( currentTime ) < timeStepSign * static_cast< TimeType >( endTime ) )
+    std::cout << flightConditionsPointer->getCurrentAltitude() << std::endl;
+    // Perform numerical integration steps until end time reached or Altitude drops below 10 km.
+    while( (timeStepSign * static_cast< TimeType >( currentTime ) < timeStepSign * static_cast< TimeType >( endTime )) && (flightConditionsPointer->getCurrentAltitude() > 10000) )
+//    while( (timeStepSign * static_cast< TimeType >( currentTime ) < timeStepSign * static_cast< TimeType >( endTime )) && ( currentMachNumber > 3.0 ) )
     {
         previousTime = currentTime;
 
@@ -94,12 +121,17 @@ std::map< TimeType, StateType > integrateEquations(
         currentTime = integrator->getCurrentIndependentVariable( );
         timeStep = timeStepSign * integrator->getNextStepSize( );
 
+        stateDerivativeFunction( currentTime , newState );
+
         // Save integration result in map
         printIndex++;
         printIndex = printIndex % printFrequency;
         if( printIndex == 0 )
         {
             solutionHistory[ currentTime ] = newState;
+
+            outputHistoryFunctions.fillDependentVariables(
+                        currentTime , dependentVariableHistoryMap );
         }
 
         // Print solutions

@@ -56,6 +56,8 @@
 #include "Tudat/Mathematics/RootFinders/rootFinder.h"
 #include "Tudat/Mathematics/RootFinders/terminationConditions.h"
 
+#include "Tudat/Mathematics/BasicMathematics/mathematicalConstants.h"
+
 namespace tudat
 {
 namespace root_finders
@@ -180,13 +182,22 @@ public:
 
         // Validate that upperbound and lowerbound function values have different signs
         // (requirement).
+        int exceptionBool = 0;
+
         if( currentLowerBoundFunctionValue * currentUpperBoundFunctionValue > 0.0 )
         {
-            boost::throw_exception( boost::enable_error_info( std::runtime_error(
-                                                                  boost::str( boost::format(
-                                                                                  "The Bisection algorithm requires that the values at the upper "
-                                                                                  "and lower bounds have a different sign." ) ) ) ) );
+//            boost::throw_exception( boost::enable_error_info( std::runtime_error(
+//                                                                  boost::str( boost::format(
+//                                                                                  "The Bisection algorithm requires that the values at the upper "
+//                                                                                  "and lower bounds have a different sign." ) ) ) ) );
+            exceptionBool = 1;
+            rootValue = TUDAT_NAN;
         }
+
+        if(exceptionBool != 1)
+        {
+
+
 
         // Loop counter.
         unsigned int counter = 1;
@@ -232,6 +243,7 @@ public:
                                            previousRootFunctionValue, counter ) );
 
         //std::cout<<"Ecc B: "<<rootValue<<" "<<this->rootFunction->evaluate( rootValue )<<std::endl;
+        }
 
         return rootValue;
 

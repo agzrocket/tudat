@@ -34,6 +34,8 @@
 #include "Tudat/Astrodynamics/Propagators/dynamicsStateDerivativeModel.h"
 #include "Tudat/Mathematics/Interpolators/lagrangeInterpolator.h"
 
+#include <thesisApplications/app13/app13/ThesisTools/PropagatorExtensions/fillOutputHistoryMaps.h>
+
 namespace tudat
 {
 
@@ -151,7 +153,7 @@ public:
      *  ephemerides.
      */
     DynamicsSimulator(
-            const  simulation_setup::NamedBodyMap& bodyMap,
+            const simulation_setup::NamedBodyMap& bodyMap,
             const boost::shared_ptr< numerical_integrators::IntegratorSettings< TimeType > > integratorSettings,
             const boost::shared_ptr< PropagatorSettings< StateScalarType > > propagatorSettings,
             const bool clearNumericalSolutions = true,
@@ -308,8 +310,6 @@ protected:
 
     //! Boolean to determine whether to automatically use the integrated results to set ephemerides.
     bool setIntegratedResult_;
-
-
 };
 
 //! Class for performing full numerical integration of a dynamical system in a single arc..
@@ -349,15 +349,19 @@ public:
      *  ephemerides.
      */
     SingleArcDynamicsSimulator(
-            const  simulation_setup::NamedBodyMap& bodyMap,
+            const simulation_setup::NamedBodyMap& bodyMap,
             const boost::shared_ptr< numerical_integrators::IntegratorSettings< TimeType > > integratorSettings,
             const boost::shared_ptr< PropagatorSettings< StateScalarType > > propagatorSettings,
             const bool areEquationsOfMotionToBeIntegrated = true,
             const bool clearNumericalSolutions = true,
-            const bool setIntegratedResult = true ):
+            const bool setIntegratedResult = true ,
+            std::string vehicleName = "Tst" ):
         DynamicsSimulator< StateScalarType, TimeType >(
             bodyMap, integratorSettings, propagatorSettings, clearNumericalSolutions, setIntegratedResult )
     {
+        // Set vehicle name to access bodyMap within the integrator.
+        setVehicleName( vehicleName );
+
         // Integrate equations of motion if required.
         if( areEquationsOfMotionToBeIntegrated )
         {
@@ -389,8 +393,13 @@ public:
         // Integrate equations of motion numerically.
         equationsOfMotionNumericalSolution_ =
                 integrateEquations< Eigen::Matrix< StateScalarType, Eigen::Dynamic, 1 >, TimeType >(
-                    stateDerivativeFunction_, dynamicsStateDerivative_->convertFromOutputSolution(
-                        initialStates, integratorSettings_->initialTime_ ), integratorSettings_ );
+                    stateDerivativeFunction_,
+                    dynamicsStateDerivative_->convertFromOutputSolution( initialStates, integratorSettings_->initialTime_ ),
+                    integratorSettings_ ,
+                    bodyMap_ ,
+                    dependentVariableHistory_ ,
+                    vehicleName_ );
+
         equationsOfMotionNumericalSolution_ = dynamicsStateDerivative_->
                 convertNumericalStateSolutionsToOutputSolutions( equationsOfMotionNumericalSolution_ );
 
@@ -410,6 +419,16 @@ public:
         return equationsOfMotionNumericalSolution_;
     }
 
+    //! Function to return the map of dependent variables of numerically integrated bodies.
+    /*!
+     * Function to return the map of dependent variable history of numerically integrated bodies.
+     * \return Map of dependent variable history of numerically integrated bodies.
+     */
+    std::map< TimeType, Eigen::MatrixXd > getDependentVariableHistory( )
+    {
+        return dependentVariableHistory_;
+    }
+
     //! Function to reset the environment from an externally generated state history.
     /*!
      * Function to reset the environment from an externally generated state history, the order of the entries in the
@@ -422,6 +441,11 @@ public:
     {
         equationsOfMotionNumericalSolution_ = equationsOfMotionNumericalSolution;
         processNumericalEquationsOfMotionSolution( );
+    }
+
+    void setVehicleName( const std::string vehicleName )
+    {
+        vehicleName_ = vehicleName;
     }
 
 protected:
@@ -461,6 +485,9 @@ protected:
      *  NOTEL this map is empty if clearNumericalSolutions_ is set to true.
      */
     std::map< TimeType, Eigen::Matrix< StateScalarType, Eigen::Dynamic, 1 > > equationsOfMotionNumericalSolution_;
+    std::map< TimeType, Eigen::MatrixXd > dependentVariableHistory_;
+
+    std::string vehicleName_;
 };
 
 }
