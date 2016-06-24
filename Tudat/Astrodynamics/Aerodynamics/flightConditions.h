@@ -20,6 +20,8 @@
 #include "Tudat/Astrodynamics/ReferenceFrames/aerodynamicAngleCalculator.h"
 #include "Tudat/Mathematics/BasicMathematics/linearAlgebraTypes.h"
 
+#include "thesisApplications/app16/app16/ThesisTools/WindModels/windModelBase.h"
+
 namespace tudat
 {
 
@@ -175,6 +177,11 @@ public:
         return aerodynamicAngleCalculator_;
     }
 
+    void setWindModelPointer( boost::shared_ptr< thesis_tools::wind_models::WindModel > windModelPointer )
+    {
+        windModelPointer_ = windModelPointer;
+    }
+
 
 private:
 
@@ -233,6 +240,9 @@ private:
 
     //! Boolean setting whether latitude and longitude are to be updated by updateConditions().
     bool updateLatitudeAndLongitude_;
+
+    //! Wind model pointer.
+    boost::shared_ptr< thesis_tools::wind_models::WindModel > windModelPointer_;
 };
 
 } // namespace aerodynamics
