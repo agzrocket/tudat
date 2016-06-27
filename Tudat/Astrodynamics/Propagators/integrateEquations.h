@@ -26,7 +26,7 @@
 
 #include "Tudat/SimulationSetup/body.h"
 
-#include "thesisApplications/app16/app16/ThesisTools/PropagatorExtensions/fillOutputHistoryMaps.h"
+#include "tudatApplications/thesisApp/thesisApp/ThesisTools/PropagatorExtensions/fillOutputHistoryMaps.h"
 
 namespace tudat
 {
@@ -65,7 +65,6 @@ std::map< TimeType, StateType > integrateEquations(
     boost::shared_ptr< NumericalIntegrator< TimeType, StateType, StateType > > integrator
           = createIntegrator< TimeType, StateType >( stateDerivativeFunction,
                                                      initialState, integratorSettings );
-
     // Get Initial state and time.
     TimeType currentTime = integratorSettings->initialTime_;
     StateType newState = initialState;
