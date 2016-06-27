@@ -7,7 +7,7 @@
  *    a copy of the license with this file. If not, please or visit:
  *    http://tudat.tudelft.nl/LICENSE.
  */
-
+#include <iostream>
 #include <boost/shared_ptr.hpp>
 
 #include "Tudat/Astrodynamics/Aerodynamics/flightConditions.h"
@@ -96,13 +96,36 @@ void FlightConditions::updateConditions( const double currentTime )
     }
 
     // Update latitude and longitude (if required)
-    if( updateLatitudeAndLongitude_ )
+    if( true ) // Force update!
     {
         currentLatitude_ = aerodynamicAngleCalculator_->getAerodynamicAngle(
                     reference_frames::latitude_angle );
         currentLongitude_ = aerodynamicAngleCalculator_->getAerodynamicAngle(
                     reference_frames::longitude_angle );
     }
+
+    // Update airspeed as a consequence of wind presence.
+    windModelPointer_->updateWindModel(
+                currentAltitude_ ,
+                currentBodyCenteredPseudoBodyFixedState_ ,
+                currentLongitude_ ,
+                currentLatitude_ );
+
+    currentAirspeedVectorInRotatingFrame_
+            = windModelPointer_->getAirspeedVector( );
+    currentWindspeedVectorInLocalVerticalFrame_
+            = windModelPointer_->getWindspeedVectorInLocalVerticalFrame();
+    currentWindspeedVectorInRotatingFrame_
+            = windModelPointer_->getWindspeedVector( );
+    currentGroundspeedVectorInRotatingFrame_
+            = windModelPointer_->getGroundspeedVector( );
+
+    currentAirspeed_
+            = currentAirspeedVectorInRotatingFrame_.norm( );
+    currentWindspeed_
+            = currentWindspeedVectorInRotatingFrame_.norm( );
+    currentGroundspeed_
+            = currentGroundspeedVectorInRotatingFrame_.norm( );
 
     // Update density
     currentDensity_ = atmosphereModel_->getDensity( currentAltitude_, currentLongitude_,
