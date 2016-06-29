@@ -57,7 +57,7 @@
 #include "Tudat/Astrodynamics/Aerodynamics/atmosphereModel.h"
 #include "Tudat/Astrodynamics/Aerodynamics/aerodynamics.h"
 #include "Tudat/Astrodynamics/BasicAstrodynamics/physicalConstants.h"
-
+#include "Tudat/Astrodynamics/Aerodynamics/standardAtmosphere.h"
 namespace tudat
 {
 namespace aerodynamics
@@ -72,7 +72,7 @@ namespace aerodynamics
  * altitude. The temperature is taken as constant and the pressure follows from the universal
  * gas law \f$ p = \rho RT \f$.
  */
-class ExponentialAtmosphere : public AtmosphereModel
+class ExponentialAtmosphere : public StandardAtmosphere
 {
 public:
 
