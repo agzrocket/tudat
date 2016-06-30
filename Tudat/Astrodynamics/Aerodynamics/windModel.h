@@ -47,11 +47,28 @@ class WindModel
             transformationV2R_
                     = reference_frames::getLocalVerticalToRotatingPlanetocentricFrameTransformationMatrix( currentLongitude , currentLatitude );
 
+            transformationR2V_
+                    = reference_frames::getRotatingPlanetocentricToLocalVerticalFrameTransformationMatrix( currentLongitude , currentLatitude );
+
             currentWindspeedVectorInRotatingFrame_
                     = transformationV2R_ * currentWindspeedVectorInLocalVerticalFrame_;
 
             currentAirspeedVectorInRotatingFrame_
                     = currentGroundspeedVectorInRotatingFrame_ - currentWindspeedVectorInRotatingFrame_;
+
+            // Transform airspeed and groundspeed to the vertical frame.
+            currentAirspeedVectorInLocalVerticalFrame_
+                    = transformationR2V_ * currentAirspeedVectorInRotatingFrame_;
+
+            currentGroundspeedVectorInLocalVerticalFrame_
+                    = transformationR2V_ * currentGroundspeedVectorInRotatingFrame_;
+
+            // Compute airspeed-based flight-path and heading angles.
+            currentFlightPathAngleAirspeedBased_
+                    = reference_frames::calculateFlightPathAngle( currentAirspeedVectorInLocalVerticalFrame_ );
+
+            currentHeadingAngleAirspeedBased_
+                    = reference_frames::calculateHeadingAngle( currentAirspeedVectorInLocalVerticalFrame_ );
         }
 
         Eigen::Vector3d getAirspeedVector( )
@@ -74,18 +91,42 @@ class WindModel
             return currentGroundspeedVectorInRotatingFrame_;
         }
 
+        double getFlightPathAngleAirspeedBased()
+        {
+            return currentFlightPathAngleAirspeedBased_;
+        }
+
+        double getHeadingAngleAirspeedBased()
+        {
+            return currentHeadingAngleAirspeedBased_;
+        }
+
     protected:
         double currentAltitude_;
+
+        double currentFlightPathAngleAirspeedBased_;
+
+        double currentHeadingAngleAirspeedBased_;
+
 
         Eigen::Vector3d currentWindspeedVectorInLocalVerticalFrame_ = Eigen::Vector3d::Zero();
 
         Eigen::Vector3d currentWindspeedVectorInRotatingFrame_;
 
+
+        Eigen::Vector3d currentGroundspeedVectorInLocalVerticalFrame_;
+
         Eigen::Vector3d currentGroundspeedVectorInRotatingFrame_;
+
+
+        Eigen::Vector3d currentAirspeedVectorInLocalVerticalFrame_;
 
         Eigen::Vector3d currentAirspeedVectorInRotatingFrame_;
 
+
         Eigen::Matrix3d transformationV2R_;
+
+        Eigen::Matrix3d transformationR2V_;
 
     private:
 

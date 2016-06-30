@@ -266,6 +266,11 @@ private:
     //! Current groundspeed vector in the rotating planetocentric frame (non-inertial).
     Eigen::Vector3d currentGroundspeedVectorInRotatingFrame_;
 
+    //! Current groundspeed-based angle of attack.
+    double currentHeadingAngle_;
+
+    //! Current groundspeed-based angle of sideslip.
+    double currentFlightPathAngle_;
 
 };
 

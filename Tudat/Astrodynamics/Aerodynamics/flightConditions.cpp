@@ -127,6 +127,30 @@ void FlightConditions::updateConditions( const double currentTime )
     currentGroundspeed_
             = currentGroundspeedVectorInRotatingFrame_.norm( );
 
+    //! Temporary replace the velocity state (originally groundspeed in the rotating frame)
+    //! by the airspeed vector in the rotating frame.
+    currentBodyCenteredPseudoBodyFixedState_[3]
+            = currentAirspeedVectorInRotatingFrame_[0];
+    currentBodyCenteredPseudoBodyFixedState_[4]
+            = currentAirspeedVectorInRotatingFrame_[1];
+    currentBodyCenteredPseudoBodyFixedState_[5]
+            = currentAirspeedVectorInRotatingFrame_[2];
+
+    //! Update aerodynamic/geometric angles again such that the flight path angle, heading angle,
+    //! angle of attack, angle of sideslip and bank angle are all defined with respect to airspeed.
+    if( aerodynamicAngleCalculator_!= NULL )
+    {
+        aerodynamicAngleCalculator_->update( );
+    }
+
+    //! Replace back the velocity state with the groundspeed in the rotating frame.
+    currentBodyCenteredPseudoBodyFixedState_[3]
+            = currentGroundspeedVectorInRotatingFrame_[0];
+    currentBodyCenteredPseudoBodyFixedState_[4]
+            = currentGroundspeedVectorInRotatingFrame_[1];
+    currentBodyCenteredPseudoBodyFixedState_[5]
+            = currentGroundspeedVectorInRotatingFrame_[2];
+
     // Update density
     currentDensity_ = atmosphereModel_->getDensity( currentAltitude_, currentLongitude_,
                                                     currentLatitude_, currentTime_ );
