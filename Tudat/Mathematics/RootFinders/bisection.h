@@ -180,58 +180,61 @@ public:
 
         // Validate that upperbound and lowerbound function values have different signs
         // (requirement).
+        int exceptionBool = 0;
         if( currentLowerBoundFunctionValue * currentUpperBoundFunctionValue > 0.0 )
         {
-            boost::throw_exception( boost::enable_error_info( std::runtime_error(
-                                                                  boost::str( boost::format(
-                                                                                  "The Bisection algorithm requires that the values at the upper "
-                                                                                  "and lower bounds have a different sign." ) ) ) ) );
+            exceptionBool = 1;
+            rootValue = TUDAT_NAN;
         }
 
-        // Loop counter.
-        unsigned int counter = 1;
-
-        // Loop until we have a solution with sufficient accuracy.
-        do
+        // Terminate algorithm if no root in the interval and return NaN.
+        if( exceptionBool != 1 )
         {
-            // Save old values.
-            previousRootValue = rootValue;
-            previousRootFunctionValue = rootFunctionValue;
+            // Loop counter.
+            unsigned int counter = 1;
 
-            // Check which subinterval to keep, by maintaining endpoints with opposite function
-            // value signs.
-            if( rootFunctionValue * currentLowerBoundFunctionValue < 0.0 )
+            // Loop until we have a solution with sufficient accuracy.
+            do
             {
-                // Different sign, hence the upper bound is replaced.
-                currentUpperBound = rootValue;
-                currentUpperBoundFunctionValue = rootFunctionValue;
-            }
-            else
-            {
-                // Same sign, hence the lower bound is replaced.
-                currentLowerBound = rootValue;
-                currentLowerBoundFunctionValue = rootFunctionValue;
-            }
+                // Save old values.
+                previousRootValue = rootValue;
+                previousRootFunctionValue = rootFunctionValue;
 
-            // Compute the new midpoint of the interval and its function value.
-            rootValue = ( currentLowerBound + currentUpperBound ) / 2.0;
-            rootFunctionValue = this->rootFunction->evaluate( rootValue );
+                // Check which subinterval to keep, by maintaining endpoints with opposite function
+                // value signs.
+                if( rootFunctionValue * currentLowerBoundFunctionValue < 0.0 )
+                {
+                    // Different sign, hence the upper bound is replaced.
+                    currentUpperBound = rootValue;
+                    currentUpperBoundFunctionValue = rootFunctionValue;
+                }
+                else
+                {
+                    // Same sign, hence the lower bound is replaced.
+                    currentLowerBound = rootValue;
+                    currentLowerBoundFunctionValue = rootFunctionValue;
+                }
 
-            // Sanity check.
-            if( currentLowerBoundFunctionValue * currentUpperBoundFunctionValue > 0.0 )
-            {
-                boost::throw_exception( boost::enable_error_info( std::runtime_error(
-                                                                      boost::str( boost::format(
-                                                                                      "The Bisection algorithm requires that the values at the upper "
-                                                                                      "and lower bounds have a different sign, error during iteration." ) ) ) ) );
+                // Compute the new midpoint of the interval and its function value.
+                rootValue = ( currentLowerBound + currentUpperBound ) / 2.0;
+                rootFunctionValue = this->rootFunction->evaluate( rootValue );
+
+                // Sanity check.
+                if( currentLowerBoundFunctionValue * currentUpperBoundFunctionValue > 0.0 )
+                {
+                    boost::throw_exception( boost::enable_error_info( std::runtime_error(
+                                                                          boost::str( boost::format(
+                                                                                          "The Bisection algorithm requires that the values at the upper "
+                                                                                          "and lower bounds have a different sign, error during iteration." ) ) ) ) );
+                }
+
+                counter++;
             }
+            while( !this->terminationFunction( rootValue, previousRootValue, rootFunctionValue,
+                                               previousRootFunctionValue, counter ) );
 
-            counter++;
+            //std::cout<<"Ecc B: "<<rootValue<<" "<<this->rootFunction->evaluate( rootValue )<<std::endl;
         }
-        while( !this->terminationFunction( rootValue, previousRootValue, rootFunctionValue,
-                                           previousRootFunctionValue, counter ) );
-
-        //std::cout<<"Ecc B: "<<rootValue<<" "<<this->rootFunction->evaluate( rootValue )<<std::endl;
 
         return rootValue;
 
