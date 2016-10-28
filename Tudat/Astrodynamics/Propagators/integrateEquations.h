@@ -109,7 +109,7 @@ std::map< TimeType, StateType > integrateEquations(
     // Perform numerical integration steps until end time reached.
     while( (timeStepSign * static_cast< TimeType >( currentTime )
             < timeStepSign * static_cast< TimeType >( endTime ))
-           && (vehicleFlightConditions->getCurrentAltitude() > 10000) )
+           && (vehicleFlightConditions->getCurrentAltitude() > 17356) )
     {
         previousTime = currentTime;
 
