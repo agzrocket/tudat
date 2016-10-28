@@ -187,6 +187,11 @@ public:
         return currentWindspeedVectorInLocalVerticalFrame_;
     }
 
+    basic_mathematics::Vector6d getCurrentBodyCenteredState( )
+    {
+        return currentBodyCenteredState_;
+    }
+
 private:
 
     //! Name of central body (i.e. body with the atmosphere)
