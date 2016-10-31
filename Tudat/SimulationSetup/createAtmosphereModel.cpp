@@ -13,6 +13,7 @@
 
 #include "Tudat/Astrodynamics/Aerodynamics/exponentialAtmosphere.h"
 #include "Tudat/Astrodynamics/Aerodynamics/tabulatedAtmosphere.h"
+#include "Tudat/Astrodynamics/Aerodynamics/tabulatedUS76.h"
 #include "Tudat/SimulationSetup/createAtmosphereModel.h"
 
 namespace tudat
@@ -71,6 +72,24 @@ boost::shared_ptr< aerodynamics::AtmosphereModel > createAtmosphereModel(
         {
             // Create and initialize tabulatedl atmosphere model.
             atmosphereModel = boost::make_shared< TabulatedAtmosphere >(
+                        tabulatedAtmosphereSettings->getAtmosphereFile( ) );
+        }
+        break;
+    }
+    case us76_atmosphere:
+    {
+        // Check whether settings for atmosphere are consistent with its type
+        boost::shared_ptr< TabulatedUS76Settings > tabulatedAtmosphereSettings =
+                boost::dynamic_pointer_cast< TabulatedUS76Settings >( atmosphereSettings );
+        if( tabulatedAtmosphereSettings == NULL )
+        {
+            throw std::runtime_error(
+                        "Error, expected tabulated atmosphere settings for body " + body );
+        }
+        else
+        {
+            // Create and initialize tabulatedl atmosphere model.
+            atmosphereModel = boost::make_shared< TabulatedUS76 >(
                         tabulatedAtmosphereSettings->getAtmosphereFile( ) );
         }
         break;

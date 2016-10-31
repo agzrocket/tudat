@@ -45,6 +45,7 @@ set(AERODYNAMICS_SOURCES
   "${SRCROOT}${AERODYNAMICSDIR}/customAerodynamicCoefficientInterface.cpp"
   "${SRCROOT}${AERODYNAMICSDIR}/flightConditions.cpp"
   "${SRCROOT}${AERODYNAMICSDIR}/horizontalWindModel07.cpp"
+  "${SRCROOT}${AERODYNAMICSDIR}/tabulatedUS76.cpp"
 )
 
 # Set the header files.
@@ -69,6 +70,7 @@ set(AERODYNAMICS_HEADERS
   "${SRCROOT}${AERODYNAMICSDIR}/constantWindModel.h"
   "${SRCROOT}${AERODYNAMICSDIR}/horizontalWindModel07.h"
   "${SRCROOT}${AERODYNAMICSDIR}//UnitTests/testApolloCapsuleCoefficients.h"
+  "${SRCROOT}${AERODYNAMICSDIR}/tabulatedUS76.h"
 )
 
 if(USE_NRLMSISE00)

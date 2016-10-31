@@ -31,7 +31,8 @@ namespace simulation_setup
 enum AtmosphereTypes
 {
     exponential_atmosphere,
-    tabulated_atmosphere
+    tabulated_atmosphere,
+    us76_atmosphere
 };
 
 //! Class for providing settings for atmosphere model.
@@ -164,6 +165,33 @@ private:
      *  four columns of atmospheric data with altitude, density, pressure and temperature,
      *  respecrively.
      */
+    std::string atmosphereFile_;
+};
+
+//! Function to create an atmosphere model.
+/*!
+ *  Function to create an atmosphere model based on model-specific settings for the atmosphere.
+ *  \param atmosphereSettings Settings for the atmosphere model that is to be created, defined
+ *  a pointer to an object of class (derived from) AtmosphereSettings.
+ *  \param body Name of the body for which the atmosphere model is to be created.
+ *  \return Atmosphere model created according to settings in atmosphereSettings.
+ */
+boost::shared_ptr< aerodynamics::AtmosphereModel > createAtmosphereModel(
+        const boost::shared_ptr< AtmosphereSettings > atmosphereSettings,
+        const std::string& body );
+
+//! AtmosphereSettings for defining an atmosphere with tabulated data from file.
+class TabulatedUS76Settings: public AtmosphereSettings
+{
+public:
+
+    TabulatedUS76Settings( const std::string& atmosphereFile ):
+        AtmosphereSettings( us76_atmosphere ), atmosphereFile_( atmosphereFile ){ }
+
+    std::string getAtmosphereFile( ){ return atmosphereFile_; }
+
+private:
+
     std::string atmosphereFile_;
 };
 
