@@ -689,6 +689,16 @@ public:
         return currentBodyFlapDeflection_;
     }
 
+    void setAerodynamicDatabaseScopeFunction( boost::function< double ( double , double ) > databaseScopeFunction )
+    {
+        databaseScopeFunction_ = databaseScopeFunction;
+    }
+
+    boost::function< double ( double , double ) > getAerodynamicDatabaseScopeFunction(  )
+    {
+        return databaseScopeFunction_;
+    }
+
 protected:
 
 private:
@@ -772,6 +782,8 @@ private:
 
     //! Current vehicle body flap deflection.
     double currentBodyFlapDeflection_;
+
+    boost::function< double ( double , double ) > databaseScopeFunction_;
 };
 
 typedef std::map< std::string, boost::shared_ptr< Body > > NamedBodyMap;
