@@ -689,14 +689,30 @@ public:
         return currentBodyFlapDeflection_;
     }
 
+    //! Function to set the boost function that computes the angle of attack at the
+    //! closest limit of the aerodynamic database.
     void setAerodynamicDatabaseScopeFunction( boost::function< double ( double , double ) > databaseScopeFunction )
     {
         databaseScopeFunction_ = databaseScopeFunction;
     }
 
+    //! Function to get the boost function that computes the angle of attack at the
+    //! closest limit of the aerodynamic database.
     boost::function< double ( double , double ) > getAerodynamicDatabaseScopeFunction(  )
     {
         return databaseScopeFunction_;
+    }
+
+    //! Function to set the specific energy that limits the integration time.
+    void setEndPointSpecificEnergy( double endPointSpecificEnergy )
+    {
+        endPointSpecificEnergy_ = endPointSpecificEnergy;
+    }
+
+    //! Function to get the specific energy that limits the integration time.
+    double getEndPointSpecificEnergy( )
+    {
+        return endPointSpecificEnergy_;
     }
 
 protected:
@@ -783,7 +799,12 @@ private:
     //! Current vehicle body flap deflection.
     double currentBodyFlapDeflection_;
 
+    //! Boost function that computes the angle of attack at the
+    //! closest limit of the aerodynamic database.
     boost::function< double ( double , double ) > databaseScopeFunction_;
+
+    //! Specific energy that limits the integration time.
+    double endPointSpecificEnergy_;
 };
 
 typedef std::map< std::string, boost::shared_ptr< Body > > NamedBodyMap;

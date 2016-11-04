@@ -27,6 +27,7 @@
 #include "Tudat/SimulationSetup/body.h"
 
 #include "tudatApplications/thesisApp/thesisApp/ThesisTools/PropagatorExtensions/fillOutputHistoryMaps.h"
+#include "tudatApplications/thesisApp/thesisApp/ThesisTools/PropagatorExtensions/computeSpecificEnergy.h"
 
 namespace tudat
 {
@@ -60,10 +61,6 @@ std::map< TimeType, StateType > integrateEquations(
     // Retrieve flight conditions pointer.
     boost::shared_ptr< aerodynamics::FlightConditions > vehicleFlightConditions
           = bodyMap[ vehicleName ]->getFlightConditions();
-
-    // Retrieve atmosphere model pointer.
-    boost::shared_ptr< tudat::aerodynamics::AtmosphereModel > atmosphereModelPointer
-          = vehicleFlightConditions->getAtmosphereModel( );
 
     // Create numerical integrator.
     boost::shared_ptr< NumericalIntegrator< TimeType, StateType, StateType > > integrator
@@ -110,23 +107,11 @@ std::map< TimeType, StateType > integrateEquations(
     int printIndex = 0;
     int printFrequency = integratorSettings->printFrequency_;
 
-
-    // Auxiliary Variables for End-Conditions
-    double currentAltitude
-            = vehicleFlightConditions->getCurrentAltitude( );
-    double currentAirspeed
-            = vehicleFlightConditions->getCurrentAirspeed( );
-    double currentSpeedOfSound
-            = atmosphereModelPointer->getSpeedOfSound( currentAltitude , 0 , 0 , 0 ); // US76 is not a reference model!
-    double currentMachNumber
-            = currentAirspeed/currentSpeedOfSound;
-
-
     // Perform numerical integration steps until end time reached.
     while( (timeStepSign * static_cast< TimeType >( currentTime )
             < timeStepSign * static_cast< TimeType >( endTime ))
-           && (vehicleFlightConditions->getCurrentAltitude() > 13000)
-           && (currentMachNumber > 1.0 ))
+           && ( thesis_tools::propagator_extensions::computeVehicleSpecificEnergy( bodyMap , vehicleFlightConditions->getCurrentBodyCenteredBodyFixedState() )
+                > bodyMap[ vehicleName ]->getEndPointSpecificEnergy( ) ) )
     {
         previousTime = currentTime;
 
