@@ -815,6 +815,51 @@ public:
         }
     }
 
+    //! Function to set the vehicle nose radius.
+    void setNoseRadius( double noseRadius )
+    {
+        noseRadius_ = noseRadius;
+    }
+
+    //! Function to get the vehicle nose radius.
+    double getNoseRadius( )
+    {
+        return noseRadius_;
+    }
+
+    //! Function to set the current vehicle body flap deflection.
+    void setCurrentElevatorDeflection( double bodyFlapDeflection )
+    {
+        currentBodyFlapDeflection_ = bodyFlapDeflection;
+    }
+
+    //! Function to get the current vehicle body flap deflection.
+    double getCurrentElevatorDeflection( )
+    {
+        return currentBodyFlapDeflection_;
+    }
+
+    void setAerodynamicDatabaseScopeFunction( boost::function< double ( double , double ) > databaseScopeFunction )
+    {
+        databaseScopeFunction_ = databaseScopeFunction;
+    }
+
+    boost::function< double ( double , double ) > getAerodynamicDatabaseScopeFunction(  )
+    {
+        return databaseScopeFunction_;
+    }
+
+    //! Function to set the specific energy that limits the integration time.
+    void setEndPointSpecificEnergy( double endPointSpecificEnergy )
+    {
+        endPointSpecificEnergy_ = endPointSpecificEnergy;
+    }
+
+    //! Function to get the specific energy that limits the integration time.
+    double getEndPointSpecificEnergy( )
+    {
+        return endPointSpecificEnergy_;
+    }
 
 protected:
 
@@ -900,6 +945,16 @@ private:
     //! Container object with hardware systems present on/in body (typically only non-NULL for a vehicle).
     boost::shared_ptr< system_models::VehicleSystems > vehicleSystems_;
 
+    //! Vehicle nose radius.
+    double noseRadius_;
+
+    //! Current vehicle body flap deflection.
+    double currentBodyFlapDeflection_;
+
+    boost::function< double ( double , double ) > databaseScopeFunction_;
+
+    //! Specific energy that limits the integration time.
+    double endPointSpecificEnergy_;
 };
 
 typedef std::unordered_map< std::string, boost::shared_ptr< Body > > NamedBodyMap;

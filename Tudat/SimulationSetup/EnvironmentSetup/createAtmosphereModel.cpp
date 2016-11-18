@@ -22,6 +22,8 @@
 #include "Tudat/InputOutput/solarActivityData.h"
 #include "Tudat/SimulationSetup/EnvironmentSetup/createAtmosphereModel.h"
 
+#include "Tudat/Astrodynamics/Aerodynamics/tabulatedUS76.h"
+
 namespace tudat
 {
 
@@ -98,6 +100,24 @@ boost::shared_ptr< aerodynamics::AtmosphereModel > createAtmosphereModel(
         break;
     }
 #endif
+    case us76_atmosphere:
+    {
+        // Check whether settings for atmosphere are consistent with its type
+        boost::shared_ptr< TabulatedUS76Settings > tabulatedAtmosphereSettings =
+                boost::dynamic_pointer_cast< TabulatedUS76Settings >( atmosphereSettings );
+        if( tabulatedAtmosphereSettings == NULL )
+        {
+            throw std::runtime_error(
+                        "Error, expected tabulated atmosphere settings for body " + body );
+        }
+        else
+        {
+            // Create and initialize tabulatedl atmosphere model.
+            atmosphereModel = boost::make_shared< TabulatedUS76 >(
+                        tabulatedAtmosphereSettings->getAtmosphereFile( ) );
+        }
+        break;
+    }
     default:
         throw std::runtime_error(
                  "Error, did not recognize atmosphere model settings type " +

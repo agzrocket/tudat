@@ -97,7 +97,7 @@ void FlightConditions::updateConditions( const double currentTime )
 
 
         // Update latitude and longitude (if required)
-        if( updateLatitudeAndLongitude_ )
+    	if( true ) // Force update!
         {
             currentLatitude_ = aerodynamicAngleCalculator_->getAerodynamicAngle(
                         reference_frames::latitude_angle );
@@ -122,6 +122,57 @@ void FlightConditions::updateConditions( const double currentTime )
         aerodynamicCoefficientInterface_->updateCurrentCoefficients(
                     aerodynamicCoefficientIndependentVariables_ );
     }
+
+//    // Update airspeed as a consequence of wind presence.
+//    windModelPointer_->updateWindModel(
+//                currentAltitude_ ,
+//                currentBodyCenteredPseudoBodyFixedState_ ,
+//                currentLongitude_ ,
+//                currentLatitude_ );
+
+//    currentAirspeedVectorInRotatingFrame_
+//            = windModelPointer_->getAirspeedVector( );
+//    currentWindspeedVectorInLocalVerticalFrame_
+//            = windModelPointer_->getWindspeedVectorInLocalVerticalFrame();
+//    currentWindspeedVectorInRotatingFrame_
+//            = windModelPointer_->getWindspeedVector( );
+//    currentGroundspeedVectorInRotatingFrame_
+//            = windModelPointer_->getGroundspeedVector( );
+
+//    currentAirspeed_
+//            = currentAirspeedVectorInRotatingFrame_.norm( );
+//    currentWindspeed_
+//            = currentWindspeedVectorInRotatingFrame_.norm( );
+//    currentGroundspeed_
+//            = currentGroundspeedVectorInRotatingFrame_.norm( );
+
+//    //! Temporary replace the velocity state (originally groundspeed in the rotating frame)
+//    //! by the airspeed vector in the rotating frame.
+//    currentBodyCenteredPseudoBodyFixedState_[3]
+//            = currentAirspeedVectorInRotatingFrame_[0];
+//    currentBodyCenteredPseudoBodyFixedState_[4]
+//            = currentAirspeedVectorInRotatingFrame_[1];
+//    currentBodyCenteredPseudoBodyFixedState_[5]
+//            = currentAirspeedVectorInRotatingFrame_[2];
+
+//    //! Update aerodynamic/geometric angles again such that the flight path angle, heading angle,
+//    //! angle of attack, angle of sideslip and bank angle are all defined with respect to airspeed.
+//    if( aerodynamicAngleCalculator_!= NULL )
+//    {
+//        aerodynamicAngleCalculator_->update( currentTime_ , 1 );
+//    }
+
+//    //! Replace back the velocity state with the groundspeed in the rotating frame.
+//    currentBodyCenteredPseudoBodyFixedState_[3]
+//            = currentGroundspeedVectorInRotatingFrame_[0];
+//    currentBodyCenteredPseudoBodyFixedState_[4]
+//            = currentGroundspeedVectorInRotatingFrame_[1];
+//    currentBodyCenteredPseudoBodyFixedState_[5]
+//            = currentGroundspeedVectorInRotatingFrame_[2];
+
+//    // Update density
+//    currentDensity_ = atmosphereModel_->getDensity( currentAltitude_, currentLongitude_, currentLatitude_, currentTime_ );
+       
 }
 
 void FlightConditions::updateAerodynamicCoefficientInput( )

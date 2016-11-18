@@ -22,6 +22,8 @@
 #include "Tudat/Astrodynamics/ReferenceFrames/aerodynamicAngleCalculator.h"
 #include "Tudat/Mathematics/BasicMathematics/linearAlgebraTypes.h"
 
+#include "Tudat/Astrodynamics/Aerodynamics/windModel.h"
+
 namespace tudat
 {
 
@@ -221,6 +223,21 @@ public:
         aerodynamicAngleCalculator_->resetCurrentTime( currentTime_ );
     }
 
+    void setWindModelPointer( boost::shared_ptr< WindModel > windModelPointer )
+    {
+        windModelPointer_ = windModelPointer;
+    }
+
+    Eigen::Vector3d getCurrentWindVelocityVectorInLocalVerticalFrame( )
+    {
+        return currentWindspeedVectorInLocalVerticalFrame_;
+    }
+
+    basic_mathematics::Vector6d getCurrentBodyCenteredState( )
+    {
+        return currentBodyCenteredState_;
+    }
+
 private:
 
     //! Function to update the independent variables of the aerodynamic coefficient interface
@@ -277,6 +294,33 @@ private:
 
     //! Current list of independent variables of the aerodynamic coefficient interface
     std::vector< double > aerodynamicCoefficientIndependentVariables_;
+
+    //! Wind model pointer.
+    boost::shared_ptr< WindModel > windModelPointer_;
+
+    //! Current windspeed at vehicle's position.
+    double currentWindspeed_;
+
+    //! Current groundspeed at vehicle's position.
+    double currentGroundspeed_;
+
+    //! Current airspeed vector in the rotating planetocentric frame (non-inertial).
+    Eigen::Vector3d currentAirspeedVectorInRotatingFrame_;
+
+    //! Current windspeed vector in the rotating planetocentric frame (non-inertial).
+    Eigen::Vector3d currentWindspeedVectorInRotatingFrame_;
+
+    //! Current windspeed vector in the local vertical frame (non-inertial).
+    Eigen::Vector3d currentWindspeedVectorInLocalVerticalFrame_;
+
+    //! Current groundspeed vector in the rotating planetocentric frame (non-inertial).
+    Eigen::Vector3d currentGroundspeedVectorInRotatingFrame_;
+
+    //! Current groundspeed-based angle of attack.
+    double currentHeadingAngle_;
+
+    //! Current groundspeed-based angle of sideslip.
+    double currentFlightPathAngle_;
 
 };
 

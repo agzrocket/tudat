@@ -22,6 +22,10 @@
 #include "Tudat/Mathematics/NumericalIntegrators/createNumericalIntegrator.h"
 #include "Tudat/Mathematics/Interpolators/lagrangeInterpolator.h"
 
+#include "Tudat/SimulationSetup/EnvironmentSetup/body.h"
+
+#include "tudatApplications/thesisApp_NovRel/thesisApp_NovRel/ThesisTools/PropagatorExtensions/fillOutputHistoryMaps.h"
+
 namespace tudat
 {
 
@@ -52,8 +56,7 @@ void integrateEquations(
         const boost::function< bool( const double ) > stopPropagationFunction,
         std::map< TimeType, StateType >& solutionHistory,
         std::map< TimeType, Eigen::VectorXd >& dependentVariableHistory,
-        const boost::function< Eigen::VectorXd( ) > dependentVariableFunction =
-        boost::function< Eigen::VectorXd( ) >( ),
+        const boost::function< Eigen::VectorXd( ) > dependentVariableFunction = boost::function< Eigen::VectorXd( ) >( ),
         const int saveFrequency = TUDAT_NAN,
         const TimeType printInterval = TUDAT_NAN )
 {

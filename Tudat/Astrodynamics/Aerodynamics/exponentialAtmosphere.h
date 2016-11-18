@@ -58,7 +58,7 @@
 #include "Tudat/Astrodynamics/Aerodynamics/aerodynamics.h"
 #include "Tudat/Astrodynamics/Aerodynamics/standardAtmosphere.h"
 #include "Tudat/Astrodynamics/BasicAstrodynamics/physicalConstants.h"
-
+#include "Tudat/Astrodynamics/Aerodynamics/standardAtmosphere.h"
 namespace tudat
 {
 namespace aerodynamics

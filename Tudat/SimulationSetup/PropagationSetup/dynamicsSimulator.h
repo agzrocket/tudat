@@ -417,6 +417,7 @@ public:
      *  \param setIntegratedResult Boolean to determine whether to automatically use the integrated results to set
      *  ephemerides (default true).
      */
+    // This constructor now receives the vehicleName as an argument!
     SingleArcDynamicsSimulator(
             const  simulation_setup::NamedBodyMap& bodyMap,
             const boost::shared_ptr< numerical_integrators::IntegratorSettings< TimeType > > integratorSettings,
@@ -457,11 +458,11 @@ public:
 
         // Integrate equations of motion numerically.
         integrateEquations< Eigen::Matrix< StateScalarType, Eigen::Dynamic, 1 >, TimeType >(
-                    stateDerivativeFunction_, equationsOfMotionNumericalSolution_,
-                    dynamicsStateDerivative_->convertFromOutputSolution(
-                        initialStates, integratorSettings_->initialTime_ ), integratorSettings_,
-                    boost::bind( &PropagationTerminationCondition::checkStopCondition,
-                                 propagationTerminationCondition_, _1 ),
+                    stateDerivativeFunction_,
+                    equationsOfMotionNumericalSolution_,
+                    dynamicsStateDerivative_->convertFromOutputSolution( initialStates, integratorSettings_->initialTime_ ),
+                    integratorSettings_,
+                    boost::bind( &PropagationTerminationCondition::checkStopCondition, propagationTerminationCondition_, _1 ),
                     dependentVariableHistory_,
                     dependentVariablesFunctions_,
                     propagatorSettings_->getPrintInterval( ) );
@@ -509,6 +510,12 @@ public:
         processNumericalEquationsOfMotionSolution( );
     }
 
+    //! Function to retrieve the map with additional dependent variables useful for reentry trajectory studies.
+    std::map< TimeType, Eigen::MatrixXd > getAlternativeDependentVariableHistory( )
+    {
+        return dependentAlternativeVariableHistory_;
+    }
+
 protected:
 
 
@@ -549,6 +556,11 @@ protected:
 
     //! Map of dependent variable history that was saved during numerical propagation.
     std::map< TimeType, Eigen::VectorXd > dependentVariableHistory_;
+
+    std::map< TimeType, Eigen::MatrixXd > dependentAlternativeVariableHistory_;
+
+    //! Name of the vehicle to be propagated.
+    std::string vehicleName_;
 
 };
 
