@@ -159,6 +159,9 @@ int getDependentVariableSize(
     case body_fixed_airspeed_based_velocity_variable:
         variableSize = 3;
         break;
+    case dissipated_energy_dependent_variable:
+        variableSize = 1;
+        break;
     default:
         std::string errorMessage = "Error, did not recognize dependent variable size of type: " +
                 boost::lexical_cast< std::string >( dependentVariableSettings );

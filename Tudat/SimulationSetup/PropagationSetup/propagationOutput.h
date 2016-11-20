@@ -157,6 +157,14 @@ boost::function< double( ) > getDoubleDependentVariableFunction(
                                         functionToEvaluate, firstInput, secondInput );
         break;
     }
+    case dissipated_energy_dependent_variable:
+        if( bodyMap.at( bodyWithProperty )->getFlightConditions( ) == NULL )
+        {
+
+        }
+        variableFunction = boost::bind( &aerodynamics::FlightConditions::getCurrentDissipatedEnergy,
+                                        bodyMap.at( bodyWithProperty )->getFlightConditions( ) );
+        break;
     case altitude_dependent_variable:
         if( bodyMap.at( bodyWithProperty )->getFlightConditions( ) == NULL )
         {

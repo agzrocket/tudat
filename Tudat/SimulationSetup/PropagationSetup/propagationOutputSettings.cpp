@@ -79,6 +79,9 @@ std::string getDependentVariableName( const PropagationDependentVariables propag
     case body_fixed_airspeed_based_velocity_variable:
         variableName = "Airspeed-based velocity ";
         break;
+    case dissipated_energy_dependent_variable:
+        variableName = "Dissipated energy ";
+        break;
     default:
         std::string errorMessage = "Error, dependent variable " +
                 boost::lexical_cast< std::string >( propagationDependentVariables ) +

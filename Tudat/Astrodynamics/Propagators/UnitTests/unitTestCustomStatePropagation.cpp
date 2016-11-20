@@ -195,7 +195,6 @@ BOOST_AUTO_TEST_CASE( testMultiTypeCustomStatePropagation )
                 propagatorSettingsList,
                 boost::make_shared< PropagationTimeTerminationSettings >( simulationEndEpoch ) );
 
-
     boost::shared_ptr< IntegratorSettings< > > integratorSettings =
             boost::make_shared< IntegratorSettings< > >
             ( rungeKutta4, 0.0, fixedStepSize );

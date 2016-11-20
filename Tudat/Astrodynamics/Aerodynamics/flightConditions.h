@@ -238,6 +238,16 @@ public:
         return currentBodyCenteredState_;
     }
 
+    void setCurrentDissipatedEnergy( double currentDissipatedEnergy )
+    {
+        currentDissipatedEnergy_ = currentDissipatedEnergy;
+    }
+
+    double getCurrentDissipatedEnergy( )
+    {
+        return currentDissipatedEnergy_;
+    }
+
 private:
 
     //! Function to update the independent variables of the aerodynamic coefficient interface
@@ -321,6 +331,9 @@ private:
 
     //! Current groundspeed-based angle of sideslip.
     double currentFlightPathAngle_;
+
+    //! Current dissipated energy.
+    double currentDissipatedEnergy_;
 
 };
 
