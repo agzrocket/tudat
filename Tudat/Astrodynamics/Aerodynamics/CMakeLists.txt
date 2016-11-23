@@ -69,6 +69,7 @@ set(AERODYNAMICS_HEADERS
   "${SRCROOT}${AERODYNAMICSDIR}/UnitTests/testApolloCapsuleCoefficients.h"
   "${SRCROOT}${AERODYNAMICSDIR}/flightConditions.cpp"
   "${SRCROOT}${AERODYNAMICSDIR}/aerodynamicGuidance.h"
+  "${SRCROOT}${AERODYNAMICSDIR}/heatFluxFunction.h"
   "${SRCROOT}${AERODYNAMICSDIR}/windModel.h"
   "${SRCROOT}${AERODYNAMICSDIR}/defaultWindModel.h"
   "${SRCROOT}${AERODYNAMICSDIR}/constantWindModel.h"

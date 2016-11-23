@@ -44,9 +44,15 @@
 #ifndef TUDAT_AERODYNAMICS_H
 #define TUDAT_AERODYNAMICS_H
 
+#include <boost/function.hpp>
+
+#include <Eigen/Core>
+
 #include <cmath>
 
 #include "Tudat/Mathematics/BasicMathematics/mathematicalConstants.h"
+#include "Tudat/Astrodynamics/Aerodynamics/flightConditions.h"
+#include "Tudat/Astrodynamics/SystemModels/vehicleSystems.h"
 
 namespace tudat
 {
@@ -373,6 +379,67 @@ double computeMachNumber( const double speed, const double speedOfSound );
  */
 double computeMeanFreePath( const double weightedAverageCollisionDiameter, const double averageNumberDensity );
 
+//! Function to compute the aerodynamic load experienced by a vehicle.
+/*!
+ * Function that computes the aerodynamic load (a.k.a. load factor) experienced by a vehicle.
+ * \param airDensity Freestream air density.
+ * \param airSpeed Airspeed of the vehicle.
+ * \param referenceArea Reference area of the vehicle.
+ * \param vehicleMass Mass of the vehicle.
+ * \param aerodynamicForceCoefficients Aerodynamic force coefficients of the vehicle.
+ * \return Aerodynamic load experienced by the vehicle.
+ */
+double computeAerodynamicLoad( const double airDensity,
+                               const double airSpeed,
+                               const double referenceArea,
+                               const double vehicleMass,
+                               const Eigen::Vector3d& aerodynamicForceCoefficients );
+
+//! Function to compute the aerodynamic load experienced by a vehicle.
+/*!
+ * Function that computes the aerodynamic load (a.k.a. load factor) experienced by a vehicle.
+ * \return Aerodynamic load experienced by the vehicle.
+ */
+double computeAerodynamicLoadFromAcceleration( const Eigen::Vector3d& aerodynamicAccelerationVector );
+
+double computeEquilibriumHeatflux( const boost::function< double( const double ) > heatTransferFunction,
+                                   const double wallEmmisivity,
+                                   const double adiabaticWallTemperature );
+
+double computeEquilibriumFayRiddellHeatFlux( const double airDensity,
+                                             const double airSpeed,
+                                             const double airTemperature,
+                                             const double machNumber,
+                                             const double noseRadius,
+                                             const double wallEmissivity = 0.80 );
+
+//! Function to compute the heat flux experienced by a vehicle.
+/*!
+ * Function that computes the heat flux experienced by a vehicle. This function is an implementation of the
+ * Fay-Riddell formula.
+ * \param airSpeed Airspeed of the vehicle.
+ * \param airTemperature Freestream air temperature.
+ * \param machNumber Freestream Mach number.
+ * \param noseRadius Nose radius of the vehicle.
+ * \param wallEmissivity Wall emissivity of the vehicle.
+ * \return Heat flux experienced by the vehicle.
+ */
+double computeFayRiddellHeatFlux( const double airDensity,
+                                  const double airSpeed,
+                                  const double airTemperature,
+                                  const double noseRadius,
+                                  const double wallTemperature );
+
+//! Function to compute the adiabatic wall temperature experienced by a vehicle.
+/*!
+ * Function that computes the adiabatic wall temperature experienced by a vehicle.
+ * \param airTemperature Freestream air temperature.
+ * \param machNumber Freestream Mach number.
+ * \return Adiabatic wall temperature experienced by the vehicle.
+ */
+double computeAdiabaticWallTemperature(
+        const double airTemperature, const double machNumber, const double ratioSpecificHeats = 1.4,
+        const double recoveryFactor = 0.845 );
 
 } // namespace aerodynamics
 } // namespace tudat

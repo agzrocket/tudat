@@ -61,6 +61,16 @@ Eigen::Quaterniond getQuaternionFromVectorRotationRepresentation(
     return Eigen::Quaterniond( getMatrixFromVectorRotationRepresentation( vectorRepresentation ) );
 }
 
+double computeEquilibriumFayRiddellHeatFluxFromProperties(
+        const boost::shared_ptr< aerodynamics::FlightConditions > flightConditions,
+        const boost::shared_ptr< system_models::VehicleSystems > vehicleSystems )
+{
+    return aerodynamics::computeEquilibriumFayRiddellHeatFlux(
+                flightConditions->getCurrentDensity( ), flightConditions->getCurrentAirspeed( ),
+                flightConditions->getCurrentFreestreamTemperature( ), flightConditions->getCurrentMachNumber( ),
+                vehicleSystems->getNoseRadius( ), vehicleSystems->getWallEmissivity( ) );
+}
+
 //! Function to evaluate a set of double and vector-returning functions and concatenate the results.
 Eigen::VectorXd evaluateListOfFunctions(
         const std::vector< boost::function< double( ) > >& doubleFunctionList,
@@ -160,6 +170,15 @@ int getDependentVariableSize(
         variableSize = 3;
         break;
     case dissipated_energy_dependent_variable:
+        variableSize = 1;
+        break;
+    case total_aerodynamic_g_load_variable:
+        variableSize = 1;
+        break;
+    case stagnation_point_heat_flux_dependent_variable:
+        variableSize = 1;
+        break;
+    case local_temperature_dependent_variable:
         variableSize = 1;
         break;
     default:

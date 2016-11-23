@@ -15,6 +15,7 @@
 #include "Tudat/Astrodynamics/Aerodynamics/aerodynamics.h"
 #include "Tudat/Astrodynamics/Aerodynamics/flightConditions.h"
 #include "Tudat/Astrodynamics/Aerodynamics/standardAtmosphere.h"
+#include "Tudat/Astrodynamics/BasicAstrodynamics/oblateSpheroidBodyShapeModel.h"
 #include "Tudat/Mathematics/BasicMathematics/mathematicalConstants.h"
 
 namespace tudat
@@ -27,16 +28,23 @@ namespace aerodynamics
 //! are retrieved.
 FlightConditions::FlightConditions(
         const boost::shared_ptr< aerodynamics::AtmosphereModel > atmosphereModel,
-        const boost::function< double( const Eigen::Vector3d ) > altitudeFunction,
+        const boost::shared_ptr< basic_astrodynamics::BodyShapeModel > shapeModel,
         const boost::shared_ptr< AerodynamicCoefficientInterface > aerodynamicCoefficientInterface,
         const boost::shared_ptr< reference_frames::AerodynamicAngleCalculator >
         aerodynamicAngleCalculator ):
     atmosphereModel_( atmosphereModel ),
-    altitudeFunction_( altitudeFunction ),
+    shapeModel_( shapeModel ),
     aerodynamicCoefficientInterface_( aerodynamicCoefficientInterface ),
-    aerodynamicAngleCalculator_( aerodynamicAngleCalculator ),currentAltitude_( TUDAT_NAN ),
-    currentLatitude_( TUDAT_NAN ), currentLongitude_( TUDAT_NAN ), currentTime_( TUDAT_NAN )
+    aerodynamicAngleCalculator_( aerodynamicAngleCalculator ),
+    currentTime_( TUDAT_NAN )
 {
+    if( boost::dynamic_pointer_cast< basic_astrodynamics::OblateSpheroidBodyShapeModel >( shapeModel ) != NULL )
+    {
+        geodeticLatitudeFunction_ = boost::bind(
+                    &basic_astrodynamics::OblateSpheroidBodyShapeModel::getGeodeticLatitude,
+                    boost::dynamic_pointer_cast< basic_astrodynamics::OblateSpheroidBodyShapeModel >( shapeModel ),
+                    _1, 1.0E-4 );
+    }
     updateLatitudeAndLongitude_ = 0;
 
     bodyCenteredPseudoBodyFixedStateFunction_ = boost::bind(
@@ -187,10 +195,7 @@ void FlightConditions::updateAerodynamicCoefficientInput( )
         {
         //Calculate Mach number if needed.
         case mach_number_dependent:
-            aerodynamicCoefficientIndependentVariables_.push_back(
-                        aerodynamics::computeMachNumber(
-                        currentAirspeed_, atmosphereModel_->getSpeedOfSound(
-                            currentAltitude_, currentLongitude_, currentLatitude_, currentTime_ ) ) );
+            aerodynamicCoefficientIndependentVariables_.push_back( getCurrentMachNumber( ) );
             break;
         //Get angle of attack if needed.
         case angle_of_attack_dependent:
