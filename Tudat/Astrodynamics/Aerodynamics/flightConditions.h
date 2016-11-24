@@ -22,8 +22,10 @@
 #include "Tudat/Astrodynamics/BasicAstrodynamics/bodyShapeModel.h"
 #include "Tudat/Astrodynamics/ReferenceFrames/aerodynamicAngleCalculator.h"
 #include "Tudat/Mathematics/BasicMathematics/linearAlgebraTypes.h"
+#include "Tudat/Astrodynamics/SystemModels/vehicleSystems.h"
 
 #include "Tudat/Astrodynamics/Aerodynamics/windModel.h"
+#include "Tudat/Astrodynamics/Aerodynamics/aerodynamics.h"
 
 namespace tudat
 {
@@ -306,6 +308,31 @@ public:
         return currentDissipatedEnergy_;
     }
 
+    void setCurrentHeatLoad( double currentHeatLoad )
+    {
+        currentHeatLoad_ = currentHeatLoad;
+    }
+
+    double getCurrentHeatLoad( )
+    {
+        return currentHeatLoad_;
+    }
+
+    double getCurrentElevatorDeflection( )
+    {
+        return 0.0;
+    }
+
+    double getCurrentGroundSpeed( )
+    {
+        return currentGroundspeed_;
+    }
+
+    double getCurrentInertialSpeed( )
+    {
+        return currentInertialspeed_;
+    }
+
 private:
 
     void computeLatitudeAndLongitude( )
@@ -479,6 +506,16 @@ private:
 
     //! Current dissipated energy.
     double currentDissipatedEnergy_;
+
+    double currentHeatLoad_;
+
+    double currentAltitude_;
+    double currentAirspeed_;
+    double currentLongitude_;
+    double currentLatitude_;
+    double currentElevatorDeflection_;
+    double currentInertialspeed_;
+
 
 };
 

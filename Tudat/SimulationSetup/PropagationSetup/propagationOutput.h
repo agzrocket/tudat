@@ -193,6 +193,38 @@ boost::function< double( ) > getDoubleDependentVariableFunction(
         variableFunction = boost::bind( &aerodynamics::FlightConditions::getCurrentDissipatedEnergy,
                                         bodyMap.at( bodyWithProperty )->getFlightConditions( ) );
         break;
+    case heat_load_dependent_variable:
+        if( bodyMap.at( bodyWithProperty )->getFlightConditions( ) == NULL )
+        {
+
+        }
+        variableFunction = boost::bind( &aerodynamics::FlightConditions::getCurrentHeatLoad,
+                                        bodyMap.at( bodyWithProperty )->getFlightConditions( ) );
+        break;
+    case elevator_deflection_dependent_variable:
+        if( bodyMap.at( bodyWithProperty )->getFlightConditions( ) == NULL )
+        {
+
+        }
+        variableFunction = boost::bind( &aerodynamics::FlightConditions::getCurrentElevatorDeflection,
+                                        bodyMap.at( bodyWithProperty )->getFlightConditions( ) );
+        break;
+    case groundspeed_dependent_variable:
+        if( bodyMap.at( bodyWithProperty )->getFlightConditions( ) == NULL )
+        {
+
+        }
+        variableFunction = boost::bind( &aerodynamics::FlightConditions::getCurrentGroundSpeed,
+                                        bodyMap.at( bodyWithProperty )->getFlightConditions( ) );
+        break;
+    case inertialspeed_dependent_variable:
+        if( bodyMap.at( bodyWithProperty )->getFlightConditions( ) == NULL )
+        {
+
+        }
+        variableFunction = boost::bind( &aerodynamics::FlightConditions::getCurrentInertialSpeed,
+                                        bodyMap.at( bodyWithProperty )->getFlightConditions( ) );
+        break;
     case altitude_dependent_variable:
         if( bodyMap.at( bodyWithProperty )->getFlightConditions( ) == NULL )
         {
@@ -476,6 +508,16 @@ std::pair< boost::function< Eigen::VectorXd( ) >, int > getVectorDependentVariab
         parameterSize = 3;
         break;
     }
+    case wind_velocity_lvlh_frame_dependent_variable:
+        if( bodyMap.at( bodyWithProperty )->getFlightConditions( ) == NULL )
+        {
+
+        }
+        variableFunction = boost::bind( &aerodynamics::FlightConditions::getCurrentWindVelocityVectorInLocalVerticalFrame,
+                                        bodyMap.at( bodyWithProperty )->getFlightConditions( ) );
+        parameterSize = 3;
+
+        break;
     case relative_velocity_dependent_variable:
     {
         // Retrieve functions for velocities of two bodies.

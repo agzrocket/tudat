@@ -181,6 +181,24 @@ int getDependentVariableSize(
     case local_temperature_dependent_variable:
         variableSize = 1;
         break;
+    case heat_load_dependent_variable:
+        variableSize = 1;
+        break;
+    case geodetic_latitude_dependent_variable:
+        variableSize = 1;
+        break;
+    case elevator_deflection_dependent_variable:
+        variableSize = 1;
+        break;
+    case groundspeed_dependent_variable:
+        variableSize = 1;
+        break;
+    case wind_velocity_lvlh_frame_dependent_variable:
+        variableSize = 3;
+        break;
+    case inertialspeed_dependent_variable:
+        variableSize = 1;
+        break;
     default:
         std::string errorMessage = "Error, did not recognize dependent variable size of type: " +
                 boost::lexical_cast< std::string >( dependentVariableSettings );

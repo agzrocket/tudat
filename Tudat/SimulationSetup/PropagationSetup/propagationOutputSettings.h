@@ -49,7 +49,12 @@ enum PropagationDependentVariables
     total_aerodynamic_g_load_variable = 20,
     stagnation_point_heat_flux_dependent_variable = 21,
     local_temperature_dependent_variable = 22,
-    geodetic_latitude_dependent_variable = 23    
+    geodetic_latitude_dependent_variable = 23,
+    heat_load_dependent_variable = 24,
+    elevator_deflection_dependent_variable = 25,
+    groundspeed_dependent_variable = 26,
+    wind_velocity_lvlh_frame_dependent_variable = 27,
+    inertialspeed_dependent_variable = 28
 
 };
 
