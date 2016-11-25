@@ -320,7 +320,7 @@ public:
 
     double getCurrentElevatorDeflection( )
     {
-        return 0.0;
+        return TUDAT_NAN;
     }
 
     double getCurrentGroundSpeed( )
