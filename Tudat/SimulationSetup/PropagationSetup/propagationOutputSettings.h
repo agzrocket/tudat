@@ -54,7 +54,8 @@ enum PropagationDependentVariables
     elevator_deflection_dependent_variable = 25,
     groundspeed_dependent_variable = 26,
     wind_velocity_lvlh_frame_dependent_variable = 27,
-    inertialspeed_dependent_variable = 28
+    inertialspeed_dependent_variable = 28,
+    range_dependent_variable = 29
 
 };
 

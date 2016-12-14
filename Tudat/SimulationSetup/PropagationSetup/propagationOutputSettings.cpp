@@ -109,6 +109,9 @@ std::string getDependentVariableName( const PropagationDependentVariables propag
     case inertialspeed_dependent_variable:
         variableName = "Inertial speed ";
         break;
+    case range_dependent_variable:
+        variableName = "Range ";
+        break;
     default:
         std::string errorMessage = "Error, dependent variable " +
                 boost::lexical_cast< std::string >( propagationDependentVariables ) +

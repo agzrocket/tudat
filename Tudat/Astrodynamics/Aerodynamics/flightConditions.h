@@ -333,6 +333,16 @@ public:
         return currentInertialspeed_;
     }
 
+    void setCurrentTravelledRange( double currentTravelledRange )
+    {
+        currentTravelledRange_ = currentTravelledRange;
+    }
+
+    double getCurrentTravelledRange( )
+    {
+        return currentTravelledRange_;
+    }
+
 private:
 
     void computeLatitudeAndLongitude( )
@@ -516,7 +526,7 @@ private:
     double currentElevatorDeflection_;
     double currentInertialspeed_;
 
-
+    double currentTravelledRange_;
 };
 
 } // namespace aerodynamics

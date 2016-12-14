@@ -453,6 +453,19 @@ boost::function< double( ) > getDoubleDependentVariableFunction(
                                         bodyMap.at( bodyWithProperty )->getFlightConditions( ) );
         break;
     }
+    case range_dependent_variable:
+    {
+        if( bodyMap.at( bodyWithProperty )->getFlightConditions( ) == NULL )
+        {
+            std::string errorMessage = "Error, no flight conditions available when requesting geodetic latitude output of " +
+                    bodyWithProperty + "w.r.t." + secondaryBody;
+            throw std::runtime_error( errorMessage );
+        }
+
+        variableFunction = boost::bind( &aerodynamics::FlightConditions::getCurrentTravelledRange,
+                                        bodyMap.at( bodyWithProperty )->getFlightConditions( ) );
+        break;
+    }
     default:
         std::string errorMessage =
                 "Error, did not recognize double dependent variable type when making variable function: " +
