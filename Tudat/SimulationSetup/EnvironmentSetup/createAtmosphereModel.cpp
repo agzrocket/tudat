@@ -23,6 +23,7 @@
 #include "Tudat/SimulationSetup/EnvironmentSetup/createAtmosphereModel.h"
 
 #include "Tudat/Astrodynamics/Aerodynamics/tabulatedUS76.h"
+#include "Tudat/Astrodynamics/Aerodynamics/tabulatedDispersedUS76.h"
 
 namespace tudat
 {
@@ -115,6 +116,24 @@ boost::shared_ptr< aerodynamics::AtmosphereModel > createAtmosphereModel(
             // Create and initialize tabulatedl atmosphere model.
             atmosphereModel = boost::make_shared< TabulatedUS76 >(
                         tabulatedAtmosphereSettings->getAtmosphereFile( ) );
+        }
+        break;
+    }
+    case us76_dispersed_atmosphere:
+    {
+        // Check whether settings for atmosphere are consistent with its type
+        boost::shared_ptr< DispersedTabulatedUS76Settings > tabulatedAtmosphereSettings =
+                boost::dynamic_pointer_cast< DispersedTabulatedUS76Settings >( atmosphereSettings );
+        if( tabulatedAtmosphereSettings == NULL )
+        {
+            throw std::runtime_error(
+                        "Error, expected tabulated atmosphere settings for body " + body );
+        }
+        else
+        {
+            // Create and initialize tabulatedl atmosphere model.
+            atmosphereModel = boost::make_shared< DispersedTabulatedUS76 >(
+                        tabulatedAtmosphereSettings->getAtmosphereFile( ) , tabulatedAtmosphereSettings->getDensityDispersion( ) );
         }
         break;
     }

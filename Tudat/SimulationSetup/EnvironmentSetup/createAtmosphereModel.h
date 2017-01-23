@@ -33,7 +33,8 @@ enum AtmosphereTypes
     exponential_atmosphere,
     tabulated_atmosphere,
     nrlmsise00,
-    us76_atmosphere
+    us76_atmosphere,
+    us76_dispersed_atmosphere
 };
 
 //! Class for providing settings for atmosphere model.
@@ -194,6 +195,23 @@ public:
 private:
 
     std::string atmosphereFile_;
+};
+
+//! AtmosphereSettings for defining an atmosphere with tabulated data from file.
+class DispersedTabulatedUS76Settings: public AtmosphereSettings
+{
+public:
+
+    DispersedTabulatedUS76Settings( const std::string& atmosphereFile , double densityDispersion ):
+        AtmosphereSettings( us76_dispersed_atmosphere ), atmosphereFile_( atmosphereFile ), densityDispersion_( densityDispersion ){ }
+
+    std::string getAtmosphereFile( ){ return atmosphereFile_; }
+    double getDensityDispersion( ){ return densityDispersion_; }
+
+private:
+    std::string atmosphereFile_;
+    double densityDispersion_;
+
 };
 
 //! Function to create an atmosphere model.
