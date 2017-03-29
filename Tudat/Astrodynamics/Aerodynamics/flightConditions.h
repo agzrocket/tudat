@@ -343,6 +343,35 @@ public:
         return currentTravelledRange_;
     }
 
+    void setCurrentPseudoGroundspeed( double currentPseudoGroundspeed )
+    {
+        currentPseudoGroundspeed_ = currentPseudoGroundspeed;
+    }
+
+    double getCurrentPseudoGroundspeed( )
+    {
+        return currentPseudoGroundspeed_;
+    }
+
+    void setCurrentPseudoAltitude( double currentPseudoAltitude )
+    {
+        currentPseudoAltitude_ = currentPseudoAltitude;
+    }
+
+    double getCurrentPseudoAltitude( )
+    {
+        return currentPseudoAltitude_;
+    }
+
+    void setCurrentPseudoGroundspeedRate( double currentPseudoGroundspeedRate )
+    {
+        currentPseudoGroundspeedRate_ = currentPseudoGroundspeedRate;
+    }
+
+    double getCurrentPseudoGroundspeedRate( )
+    {
+        return currentPseudoGroundspeedRate_;
+    }
 private:
 
     void computeLatitudeAndLongitude( )
@@ -527,6 +556,9 @@ private:
     double currentInertialspeed_;
 
     double currentTravelledRange_;
+    double currentPseudoGroundspeed_;
+    double currentPseudoAltitude_;
+    double currentPseudoGroundspeedRate_;
 };
 
 } // namespace aerodynamics
